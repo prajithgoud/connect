@@ -115,7 +115,7 @@ export default class CreateUser extends Component {
             console.log(error)
         });
 
-        this.setState({ Email: '', Password: '' })
+//         this.setState({ Email: '', Password: '' })
         this.setState({ Email: '', Password: '',Emailerror:'', Name: '' ,Confirm: '',department: ''})
 
     }
