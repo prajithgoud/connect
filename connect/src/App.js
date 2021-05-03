@@ -8,31 +8,17 @@ import dataTable from "./components/data-table"
 import Login from "./components/login"
 import "./App.css"
 // import "../server/routes/user.routes"
+import Welcome from "./components/Welcome";
 
 function App() {
   return (<Router>
     <div className="App">
-      {/* <header>
-        <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-          <a className="navbar-brand">React Axios Tutorial</a>
-
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav ml-auto">
-              <li className="nav-item active">
-                <Link className="nav-link" to={"/create-user"}>Create User</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to={"/users"}>Users List</Link>
-              </li>
-            </ul>
-          </div>
-        </nav>
-      </header> */}
-
+     
       <div className="container">
         <div className="row">
           <div className="col-md-12">
             <Switch>
+            <Route exact path="/" component={Welcome} />
               <Route path="/signin" component={CreateUser} />
               <Route path="/login" component={Login} />
               <Route path="/users" component={Users} />

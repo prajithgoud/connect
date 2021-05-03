@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from 'axios';
-import Welcome from "./welcome"
+import Welcome from "./Welcome"
 export default class Header extends Component {
 
   constructor(props) {
@@ -34,6 +34,7 @@ onSubmit(e) {
               "department" : userObject.department
         })
         .then((res) => {
+            res.send(res.data);
             console.log(res.data);
         }).catch((error) => {
             console.log(error)
