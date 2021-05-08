@@ -4,9 +4,10 @@ let cors = require('cors');
 let bodyParser = require('body-parser');
 let database = require('./database/db');
 let user = require('./models/user-schema');
-
+const createError = require('http-errors');
 const userRoute = require('../server/routes/user.routes');
-
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 // alert("Hello! I am an alert box!");
 
 // import {Welcome} from '../src/components/welcome'
@@ -23,10 +24,15 @@ mongoose.connect(database.db, {
 )
 
 const app = express();
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-    extended: true
-}));
+    extended: false
+  }));
+
+// app.use(express.json()); 
+// app.use(express.urlencoded()); 
+
 app.use(cors());
 
 app.use('/users', function(req,res) {
@@ -39,27 +45,36 @@ app.use('/users', function(req,res) {
     })
 })
 
+// app.use('/',create);
+
+// Used bcrypt(Blowfish Cypher) algorithm for password hashing
 app.use('/create',(req, res, next) => {
-    user.create(req.body, (error, data) => {
-        if (error) {
+    bcrypt.hash(req.body.Password, saltRounds, function(err, hash) {
+            req.body.Password = hash;
+            user.create(req.body, (error, data) => {
+        if (error) 
             return next(error)
-        } else {
+         else {
             console.log(data)
             res.json(data)
         }
-    })
+        })
+})
 });
 
 app.use('/find',(req,res,next) => {
-    user.find(req.body, (error, data) => {
-        if (error) {
+    // bcrypt.compare(req.body.Password,hash,function(err,result) {
+    //     req.body.Password = hash;
+        user.find(req.body, (error, data) => {
+        if (error)
             return next(error)
-        } else {
+        else {
             console.log(data)
             res.json(data)
         }
     })
-});
+})
+// });
 
 app.use('/delete/:id' , function(req,res,next) {
     user.findByIdAndRemove(req.params.id, (error, data) => {
@@ -72,14 +87,14 @@ app.use('/delete/:id' , function(req,res,next) {
         }
     })
 });
-
+app.use('/',userRoute)
 app.use('/update/:id' ,(req, res, next) => {
     user.findByIdAndUpdate(req.params.id, {
         $set: req.body
     }, (error, data) => {
         if (error) {
-            return next(error);
-            console.log(error)
+            return next(error)
+            
         } else {
             res.json(data)
             console.log('User updated successfully !')
