@@ -2,12 +2,12 @@
 
 import React, { Component } from 'react';
 import axios from 'axios';
-import "./create-user.component.css"
+import "./create-user.component.css";
+// import ReactEncrypt from 'react-encrypt';
 
+// import Bcrypt from "./bcrypt";
 
-// const express = require('express');
-// const path = require('path');
-// const app = express();
+// const bcrypt = require('bcrypt');
 
 export default class CreateUser extends Component {
 
@@ -21,7 +21,7 @@ export default class CreateUser extends Component {
         this.onChangeConfirm = this.onChangeConfirm.bind(this);
         this.onChangedepartment = this.onChangedepartment.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
-
+        // this.hola = this.hola.bind(this);
         this.state = {
             Email: '',
             Password: '',
@@ -34,9 +34,9 @@ export default class CreateUser extends Component {
     }
 
     onChangeEmail(e) {
-        document.getElementById("incorrect").style.display = "none";
+        // document.getElementById("incorrect").style.display = "none";
         this.setState({ Email: e.target.value })
-        console.log(e.target.value);
+        // console.log(e.target.value);
     }
 
     onChangePassword(e) {
@@ -67,15 +67,20 @@ export default class CreateUser extends Component {
         this.setState({ Confirm : e.target.value })
     }
 
-
+    // getComponent(e) {
+    //     return <Bcrypt/>
+    // }
     onSubmit(e) {
         e.preventDefault()
         const isValid = this.validate();
-
         if(isValid) {
-        const userObject = {
+        // let pass = this.state.Password;
+        // let encryptedText = encrypt(pass);
+
+        var userObject = {
             Email: this.state.Email,
-            Password: this.state.Password,
+            // Password: encryptedText,
+            Password:this.state.Password,
             Name: this.state.Name,
             department: this.state.department
         };
@@ -88,7 +93,7 @@ export default class CreateUser extends Component {
             document.getElementById("notmatch").style.display = "block";
         }
         else {
-        console.log(userObject);
+        // console.log(userObject.Email);
         document.getElementById("notmatch").style.display = "none";
         axios.post('http://localhost:5000/find',{
             "Email" : userObject.Email
@@ -102,11 +107,11 @@ export default class CreateUser extends Component {
             }
             else if (res.data.length == 0)
             {
-                console.log(userObject)
+                // console.log(userObject.Email)
                 axios.post('http://localhost:5000/create', userObject)
                 .then((res) => {
                     // console.log();
-                    console.log(res.data)
+                    console.log(res.data.Password+"1")
                 }).catch((error) => {
                     console.log(error)
                 });
@@ -115,17 +120,19 @@ export default class CreateUser extends Component {
             console.log(error)
         });
 
-        this.setState({ Email: '', Password: '' })
-        this.setState({ Email: '', Password: '',Emailerror:'', Name: '' ,Confirm: '',department: ''})
+        // this.setState({ Email: '', Password: '' })
+        this.setState({ Email: '', Password: '',Emailerror:'', Name: '' ,Confirm: '',department: ''});
 
     }
     }
+}
 
     
       
     render() {
         return (
             <div className="wrapper">
+                {/* <ReactEncrypt /> */}
                 <div class ="box">
                 <form onSubmit={this.onSubmit}>
                     <div class="mb-3">
@@ -135,8 +142,7 @@ export default class CreateUser extends Component {
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Email address</label>
                         <input type="email" value={this.state.Email} autoFocus = "1" placeholder = "@uceou.edu" onChange={this.onChangeEmail} className="form-control"class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                        {/* <div class="_9ay5"><i class="_9ay6 img sp_HDskLL-LmEK_1_5x sx_ee9706"></i></div>
-                        <i class='fas fa-exclamation-triangle' style='font-size:48px;color:red'></i> */}
+                        
                         <div style={{ fontSize: 12, color: "red", fontVariantCaps :"titling-caps" ,fontFamily :"sans-serif" }}>
                             {this.state.Emailerror} 
                         </div>
@@ -144,8 +150,8 @@ export default class CreateUser extends Component {
                             {/* <div class="box px">{this.state.Emailerror}</div> */}
                         
                         {/* <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> */}
-                        <input type="email" value={this.state.Email} onChange={this.onChangeEmail} className="form-control"class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                        <p id="incorrect" style={{display: "none"}}> The Email is already used </p>
+                        {/* <input type="email" value={this.state.Email} onChange={this.onChangeEmail} className="form-control"class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
+                        <p id="incorrect" style={{display: "none"}}> The Email is already used </p> */}
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputDepartment1" class="form-label">Department</label>
@@ -160,7 +166,7 @@ export default class CreateUser extends Component {
                         <input type="password" value={this.state.Confirm} onChange={this.onChangeConfirm} className="form-control" class="form-control" id="exampleInputConfirm1" />
                         <p id="notmatch" style={{display: "none"}}> The Passwords does not Match </p>
                     </div>
-                    <button type="submit" value="Create User" class="btn btn-primary">Submit</button>
+                    <button type="submit" value="Create User" class="w-full bg-gray-800 hover:bg-grey-900 text-black text-sm py-2 px-4 font-semibold rounded focus:outline-none focus:shadow-outline h-10">Submit</button>
                 </form>
                 </div>
                 {/* <div class="g-signin2" data-onsuccess="onSignIn"></div> */}
