@@ -50,8 +50,8 @@ app.use('/users', function(req,res) {
 // Used bcrypt(Blowfish Cypher) algorithm for password hashing
 app.use('/create',(req, res, next) => {
     bcrypt.hash(req.body.Password, saltRounds, function(err, hash) {
-            req.body.Password = hash;
-            user.create(req.body, (error, data) => {
+        req.body.Password = hash;
+        user.create(req.body, (error, data) => {
         if (error) 
             return next(error)
          else {
@@ -62,10 +62,35 @@ app.use('/create',(req, res, next) => {
 })
 });
 
+// app.use('/login', (req, res,next) => {
+//         console.log(req.body.enteredpass);
+//         bcrypt.compare(req.body.enteredpass,req.body.retrievedpass,function(err,result) {
+//                 if (result) {
+//                       console.log("It matches!")
+//                 }
+//                 else {
+//                       console.log("Invalid password!");
+//                 }
+//     })
+// });
+app.use('/login', (req, res,next) => {
+    console.log(req.body)
+    bcrypt.compare(req.body.enterpass,req.body.retpass,function(err,result) {
+        if(err){
+            return next(error)
+        } else {
+            console.log(result)
+            res.json(result)
+        }
+    })
+});
+
+
 app.use('/find',(req,res,next) => {
     // bcrypt.compare(req.body.Password,hash,function(err,result) {
     //     req.body.Password = hash;
-        user.find(req.body, (error, data) => {
+
+        user.find(req.body, (error,data) => {
         if (error)
             return next(error)
         else {
@@ -87,7 +112,7 @@ app.use('/delete/:id' , function(req,res,next) {
         }
     })
 });
-app.use('/',userRoute)
+// app.use('/',userRoute)
 app.use('/update/:id' ,(req, res, next) => {
     user.findByIdAndUpdate(req.params.id, {
         $set: req.body

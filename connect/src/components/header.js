@@ -53,7 +53,7 @@ onSubmit(e) {
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
       <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="/signin">Signin</a>
+          <a class="nav-link" aria-current="page" href="/signin">SignUp</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/login">login</a>
