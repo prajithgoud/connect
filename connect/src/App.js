@@ -8,7 +8,7 @@ import dataTable from "./components/data-table"
 import Login from "./components/login"
 import "./App.css"
 // import "../server/routes/user.routes"
-import Welcome from "./components/Welcome";
+import Welcome from "./components/welcome";
 
 function App() {
   return (<Router>

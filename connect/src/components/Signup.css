@@ -13,9 +13,9 @@ display: flex;
 align-items: center; 
 justify-content: center; 
 background: url(connect.jpg) no-repeat; 
-    background-size: cover; 
-    background-position: center;
-    perspective: 1000px; 
+background-size: cover; 
+background-position: center;
+perspective: 1000px; 
     
 } 
 .form-container form{ 

@@ -80,9 +80,15 @@ export default class CreateUser extends Component {
         this.setState({ Confirm : e.target.value })
     }
 
+    // resetForm(){
+
+    //     this.setState({feedback: ''});
+    // }
     // getComponent(e) {
     //     return <Bcrypt/>
     // }
+
+    
     onSubmit(e) {
         e.preventDefault()
         const isValid = this.validate();
@@ -94,7 +100,11 @@ export default class CreateUser extends Component {
             department: this.state.department
         };
 
-
+        // const messageHtml =  renderEmail(
+        //     // <MyEmail name={this.state.Name}> {this.state.feedback}</MyEmail>
+        //     <MyEmail name={this.state.Name}> </MyEmail>
+        //   );
+        
         axios.post('http://localhost:5000/find', {
             "Email":userObject.Email })
         if(this.state.Password != this.state.Confirm)
@@ -115,8 +125,26 @@ export default class CreateUser extends Component {
             }
             else if (res.data.length == 0)
             {
+                
                 axios.post('http://localhost:5000/create', userObject)
                 .then((res) => {
+                    // console.log(res.msg);
+                    axios({
+                        method: "POST",
+                        url:"http://localhost:5000/send",
+                        data: {
+                      name: userObject.Name,
+                      email: userObject.Email,
+                    //   messageHtml: messageHtml
+                        }
+                    }).then((response)=>{
+                        if (response.data.msg === 'success'){
+                            alert("Email sent, awesome!");
+                            // this.resetForm()
+                        }else if(response.data.msg === 'fail'){
+                            alert("Oops, something went wrong. Try again")
+                        }
+                    })
                     console.log(res.data.Password)
                 }).catch((error) => {
                     console.log(error)

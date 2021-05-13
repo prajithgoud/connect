@@ -7,18 +7,18 @@ let userSchema = new Schema({
     },
     Email: {
         type: String,
-        required:true,
+        // required:true,
         unique:true,
         lowercase:true,
         trim:true
     },
     Password: {
         type: String,
-        required:true
-    },
-    department: {
-        type: String
+        // required:true
     }
+    // department: {
+    //     type: String
+    // }
 }, {
         collection: 'registration',
         timestamps:true

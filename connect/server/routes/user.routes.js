@@ -3,9 +3,15 @@ let express = require('express');
 let router = express.Router();
 
 let user = require('../models/user-schema');
+const { signup, Delete } = require("../controllers/auth");
+
+
+router.post('/signup',signup);
+// router.delete('/delete',Delete);
 
 router.route('/create').post((req, res, next) => {
     user.create(req.body, (error, data) => {
+        
         if (error) {
             return next(error)
         } else {
@@ -15,7 +21,9 @@ router.route('/create').post((req, res, next) => {
     })
 });
 
-router.route('/').get((req, res) => {
+
+
+router.route('/users').get((req, res) => {
     user.find((error, data) => {
         if (error) {
             return next(error)
@@ -42,7 +50,6 @@ router.route('/update/:id').put((req, res, next) => {
     user.findByIdAndUpdate(req.params.id, {$set}, (error, data) => {
         if (error) {
             return next(error);
-            console.log(error)
         } else {
             res.json(data)
             console.log('User updated successfully !')
@@ -50,16 +57,16 @@ router.route('/update/:id').put((req, res, next) => {
     })
 })
 
-router.route('/delete/:id').delete((req, res, next) => {
-    user.findByIdAndRemove(req.params.id, (error, data) => {
-        if (error) {
-            return next(error);
-        } else {
-            res.status(200).json({
-                msg: data
-            })
-        }
-    })
-})
+// router.route('/delete/:id').delete((req, res, next) => {
+//     user.findByIdAndRemove(req.params.id, (error, data) => {
+//         if (error) {
+//             return next(error+"delete");
+//         } else {
+//             res.status(200).json({
+//                 msg: data
+//             })
+//         }
+//     })
+// })
 
 module.exports = router;

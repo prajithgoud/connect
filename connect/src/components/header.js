@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from 'axios';
-import Welcome from "./Welcome"
+import Welcome from "./welcome"
 export default class Header extends Component {
 
   constructor(props) {
