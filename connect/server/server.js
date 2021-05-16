@@ -8,6 +8,8 @@ let database = require('./database/db');
 let user = require('./models/user-schema');
 const createError = require('http-errors');
 const userRoute = require('./routes/user.routes');
+const jwt = require('jsonwebtoken');
+
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 require("./database/db");
@@ -41,6 +43,11 @@ app.use(cors());   // It is to give the other host to actually access this REST 
 
 app.use('/api',userRoute);
 
+const SignToken = id => {
+    return jwt.sign({id} , process.env.JWT_SECRET,{
+        expiresIn: process.env.JWT_EXPIRES_IN
+    });
+}
 // Email verification
 
 app.use('/send', (req, res) => {
@@ -101,6 +108,7 @@ transporter.sendMail(mailOptions, (error, info) => {
 });
 
   
+
 // Different App Routes
 app.use('/users', function(req,res) {
     user.find((error, data) => {
@@ -115,53 +123,74 @@ app.use('/users', function(req,res) {
 
 
 // Used bcrypt(Blowfish Cypher) algorithm for password hashing
-app.use('/create',(req, res, next) => {
-
-    bcrypt.hash(req.body.Password, saltRounds, function(err, hash) {
+// Added JWT Token to SignUp
+app.use('/create', (req, res, next) => {
+    
+    bcrypt.hash(req.body.Password, saltRounds, async function(err, hash) {
         req.body.Password = hash;
-        user.create(req.body, (error, data) => {
-        if (error) 
-            return next(error)
-         else {
-            console.log(data)
-            res.json(data)
-        }
+        const newUser = await user.create(req.body);
+        // user.create(req.body, (error, data) => {
+        // if (error) 
+        //     return next(error)
+        //  else {
+        //     console.log(data);
+        //     res.json(data,{token})
+        // }
+        // });
+        // user.find
+        const token = SignToken(newUser._id);
+        res.status(201).json({
+            status:"success",
+            token,
+            data :{
+                user : newUser
+            }
         })
 })
 });
 
-// app.use('/login', (req, res,next) => {
-//         console.log(req.body.enteredpass);
-//         bcrypt.compare(req.body.enteredpass,req.body.retrievedpass,function(err,result) {
-//                 if (result) {
-//                       console.log("It matches!")
-//      Already Commented           }
-//                 else {
-//                       console.log("Invalid password!");
-//                 }
-//     })
-// });
+// Added JWT token to login
 
-
-app.use('/login', (req, res,next) => {
-    console.log(req.body)
-    bcrypt.compare(req.body.enterpass,req.body.retpass,function(err,result) {
+app.use('/login', async (req, res,next) => {
+    // console.log(req.body)
+    const {enterpass,retpass,email} = req.body;
+    bcrypt.compare(req.body.enterpass,req.body.retpass, async function(err,result) {
         if(err){
-            return next(error)
+            return next(err)
         } else {
-            
-            console.log(result)
-            res.json(result)
-           
-            
-        }
+            // const {email} = req.body;
+            const newuser = await user.findOne({Email : req.body.email});
+            console.log(newuser)
+            const token = SignToken(newuser._id);
+            // console.log(token);
+            if(result){
+            await res.status(200).json({
+                status : 'success',
+                token,
+                result,
+                data : {
+                    user : newuser
+                }
+            })}
+            else{
+                await res.status(401).json({
+                    status : 'fail',
+                    result,
+                    data : {
+                        user : newuser
+                    }
+                })}
+        } 
+            // res.json(result)
     })
+
 });
 
+app.get('/',async (req,res,next) => {
+    // console.log(req.header
+    res.send("hello from sai")
+})
 app.use('/find',(req,res,next) => {
-    // bcrypt.compare(req.body.Password,hash,function(err,result) {
-    //     req.body.Password = hash;
-
         user.find(req.body, (error,data) => {
         if (error)
             return next(error)

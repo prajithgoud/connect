@@ -100,11 +100,22 @@ export default class CreateUser extends Component {
             {
                 const userdet = {
                     enterpass : userObject.Password,
-                    retpass : res.data[0].Password
+                    retpass : res.data[0].Password,
+                    email : userObject.Email
                 };
                 axios.post('http://localhost:5000/login',userdet)
                 .then((res) => {
-                    console.log(res)
+                    console.log(res.data.token);
+                    const Token = "Bearer " + res.data.token;
+                    console.log("client");
+                    const id = {
+                        Authorization : Token
+                    }
+                    axios.post('http://localhost:5000',id)
+                    .then((response) => {
+                        console.log(response);
+                    })
+                    // console.log(res.data.token);
                     // console.log("hi");
                 })
                 .catch((error) => {

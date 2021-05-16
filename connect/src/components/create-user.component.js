@@ -57,16 +57,35 @@ export default class CreateUser extends Component {
     }
 
     validate = () => {
-        // let Emailerror = "";
-        // let Passworderror = "";
+        let Emailerror = "";
+        let Passworderror = "";
 
+        // if (!this.state.Email.includes("@uceou.edu")) {
+        //     this.setState({
+        //         Emailerror : "Confined to uceou.edu account holders"
+        //     })
+        // }
+        // if(this.state.Password.length < 8) {
+        //     this.setState({
+        //         Passworderror : "Min. 8 characters"
+        //     })
+        // }
+        // if(Emailerror || Passworderror)
+        //     return 0;
+        // else
+        //     return 1;
         if (!this.state.Email.includes("@uceou.edu")) {
             this.setState({
                 Emailerror : "Confined to uceou.edu account holders"
             })
             return 0;  
         }
-        else
+        if(this.state.Password.length < 8) {
+            this.setState({
+                Passworderror : "Min. 8 characters"
+            })
+            return 0;
+        }
             return 1;
     }
     onChangedepartment(e) {
@@ -92,6 +111,7 @@ export default class CreateUser extends Component {
     onSubmit(e) {
         e.preventDefault()
         const isValid = this.validate();
+
         if(isValid) {
         var userObject = {
             Email: this.state.Email,
@@ -117,7 +137,7 @@ export default class CreateUser extends Component {
             "Email" : userObject.Email
         })
         .then((res) => {
-            console.log(res.data.length)
+            // console.log(res.data.length)
             if(res.data.length > 0)
             {
                 alert("You already have an account")
@@ -145,7 +165,7 @@ export default class CreateUser extends Component {
                             alert("Oops, something went wrong. Try again")
                         }
                     })
-                    console.log(res.data.Password)
+                    console.log(res.data.user.Password)
                 }).catch((error) => {
                     console.log(error)
                 });
@@ -228,6 +248,9 @@ export default class CreateUser extends Component {
                 <div class="container">
                 <span class="icon"><i class="fas fa-lock"></i></span>
                 <input type="password" value={this.state.Password} onChange={this.onChangePassword} placeholder="password"/>
+                <div style={{ fontSize: 12, color: "red", fontVariantCaps :"titling-caps" ,fontFamily :"sans-serif" }}>
+                     {this.state.Passworderror} 
+                </div>
                 </div>
                 <div class="container">
                 <span class="icon"><i class="fas fa-lock"></i></span>

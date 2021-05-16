@@ -10,10 +10,13 @@ let userSchema = new Schema({
         // required:true,
         unique:true,
         lowercase:true,
-        trim:true
+        trim:true,
+        // validate : [validator.isEmail , 'Please provide a valid email']
     },
     Password: {
         type: String,
+        minlength : 8
+        // select : false,
         // required:true
     }
     // department: {
