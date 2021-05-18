@@ -207,10 +207,37 @@ app.use('/login', async (req, res,next) => {
 
 app.get('/token',verifyAccessToken, catchAsync(async (req,res,next) => {
     
-    res.send("hello")
+    // let token;
+    //     if (
+    //         req.headers.authorization &&
+    //         req.headers.authorization.startsWith('Bearer')
+    //     ){
+    //         token = req.headers.authorization.split(' ')[1];
+    //     }
+    // if(!token){
+    //     return next(new AppError('You are not logged in! Please log in',401));
+    // }
+
+    // console.log(token);
+    // // 2) Verification of token
+    // const decoded = await promisify(jwt.verify)(token,process.env.JWT_SECRET);
+    // console.log(decoded);
     
+    // // 3) Checking if user still exists
+    // const freshUser = await user.findById(decoded.id);
+    // console.log(freshUser);
+    // if(!freshUser) {
+    //     return next(new AppError('The User belonging to this token no longer exists!',401))
+    // }
+    // req.payload = decoded;
+    // // // 
+    // next();
+    // console.log(req.payload);
+    //  if(req.payload)
+        res.json(req.payload);
+    // next();
 }))
-app.use('/find',(req,res,next) => {
+app.use('/find',verifyAccessToken,(req,res,next) => {
         user.find(req.body, (error,data) => {
         if (error)
             return next(error)

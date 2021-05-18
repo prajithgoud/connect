@@ -32,21 +32,20 @@ module.exports = {
     if(!token){
         return next(new AppError('You are not logged in! Please log in',401));
     }
-
+    // console.log(req.headers);
     console.log(token);
     // 2) Verification of token
-
     const decoded = await promisify(jwt.verify)(token,process.env.JWT_SECRET);
     console.log(decoded);
-    req.payload = decoded;
+    
     // 3) Checking if user still exists
     const freshUser = await user.findById(decoded.id);
+    console.log(freshUser);
     if(!freshUser) {
-        return next(new AppError('The User belonging to this token no longer exists!',401))
+        return next(new AppError('The User belonging to this token no longer exists!',401));
     }
-    // 
-    next();
+    req.payload = decoded;
     // res.send(decoded);
-    // next();
+    next();
     })  
 }
