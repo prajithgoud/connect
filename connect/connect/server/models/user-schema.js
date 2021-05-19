@@ -13,6 +13,12 @@ let userSchema = new Schema({
         trim:true,
         // validate : [validator.isEmail , 'Please provide a valid email']
     },
+    Photo: String,
+    Role: {
+        type: String,
+        enum : ['Admin','Student','StarUser'],
+        default : 'Student'
+    },
     Password: {
         type: String,
         minlength : 8

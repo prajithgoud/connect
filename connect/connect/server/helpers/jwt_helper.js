@@ -9,17 +9,6 @@ const user = require('../models/user-schema');
 module.exports = {
 
     verifyAccessToken:catchAsync(async(req,res,next) => {
-    //     if(!req.headers['authorization'])
-    // return next(createError.Unauthorized())
-    // const authHeader = req.headers['authorization'];
-    // const bearerToken = authHeader.split(' ');
-    // const token = bearerToken[1];
-    // if(!token){
-    //     return next(new AppError('You are not logged in! Please log in',401));
-    // }
-    // const decoded = await promisify(jwt.verify)(token,process.env.JWT_SECRET);
-    // console.log(decoded);
-    // res.json(decoded);
 
     // Checking whether user is logged in or not
     let token;
@@ -40,12 +29,52 @@ module.exports = {
     
     // 3) Checking if user still exists
     const freshUser = await user.findById(decoded.id);
-    console.log(freshUser);
+    // console.log(freshUser);
     if(!freshUser) {
         return next(new AppError('The User belonging to this token no longer exists!',401));
     }
+    req.user = freshUser;
+    // console.log(req.body);
+    req.payload = decoded;
+    // res.send(decoded);
+    next();
+    }),
+    
+    verifyAccessTokenWithRestriction:catchAsync(async(req,res,next) => {
+        
+    // Checking whether user is logged in or not
+    let token;
+        if (
+            req.headers.authorization &&
+            req.headers.authorization.startsWith('Bearer')
+        ){
+            token = req.headers.authorization.split(' ')[1];
+        }
+    if(!token){
+        return next(new AppError('You are not logged in! Please log in',401));
+    }
+    // console.log(req.headers);
+    console.log(token);
+    // 2) Verification of token
+    const decoded = await promisify(jwt.verify)(token,process.env.JWT_SECRET);
+    console.log(decoded);
+    
+    // 3) Checking if user still exists
+    const freshUser = await user.findById(decoded.id);
+    // console.log(freshUser);
+    if(!freshUser) {
+        return next(new AppError('The User belonging to this token no longer exists!',401));
+    }
+    req.user = freshUser;
+    // 4) Restriction to StarUsers
+
+    if(!req.user.Role.includes('StarUser') && !req.user.Role.includes('Admin') ) {
+            return next(new AppError('You do not have permission to perform this action',403));
+    }
+    // console.log(req.body);
     req.payload = decoded;
     // res.send(decoded);
     next();
     })  
+    
 }
