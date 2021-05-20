@@ -205,7 +205,7 @@ app.use('/login', async (req, res,next) => {
 
 });
 
-app.get('/token',verifyAccessToken, catchAsync(async (req,res,next) => {
+app.get('/token', catchAsync(async (req,res,next) => {
     
     console.log(req.payload);
     // console.log(req.user);
@@ -213,7 +213,7 @@ app.get('/token',verifyAccessToken, catchAsync(async (req,res,next) => {
 }))
 
 
-app.use('/find',verifyAccessTokenWithRestriction,(req,res,next) => {
+app.use('/find',(req,res,next) => {
         user.find(req.body, (error,data) => {
         if (error)
             return next(error)
@@ -222,6 +222,17 @@ app.use('/find',verifyAccessTokenWithRestriction,(req,res,next) => {
             res.json(data)
         }
     })
+})
+
+app.use('/find/restriction',verifyAccessTokenWithRestriction,(req,res,next) => {
+    user.find(req.body, (error,data) => {
+    if (error)
+        return next(error)
+    else {
+        console.log(data)
+        res.json(data)
+    }
+})
 })
 // })
 

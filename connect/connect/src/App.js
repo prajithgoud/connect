@@ -24,7 +24,7 @@ function App() {
               <Route path="/login" component={Login} />
               <Route path="/users" component={Users} />
               <Route path="/datatable" component={dataTable} />
-              <Route path = "/checkout" component={Checkout} />
+              <Route path = "/Checkout" component={Checkout} />
               {/* <Route path="/Login" component={Login} /> */}
             </Switch>
           </div>

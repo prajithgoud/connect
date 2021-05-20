@@ -40,21 +40,6 @@ export default class CreateUser extends Component {
     validate = () => {
         let Emailerror = "";
         let Passworderror = "";
-
-        // if (!this.state.Email.includes("@uceou.edu")) {
-        //     this.setState({
-        //         Emailerror : "Confined to uceou.edu account holders"
-        //     })
-        // }
-        // if(this.state.Password.length < 8) {
-        //     this.setState({
-        //         Passworderror : "Min. 8 characters"
-        //     })
-        // }
-        // if(Emailerror || Passworderror)
-        //     return 0;
-        // else
-        //     return 1;
         if (!this.state.Email.includes("@uceou.edu")) {
             this.setState({
                 Emailerror : "Confined to uceou.edu account holders"
@@ -116,10 +101,6 @@ export default class CreateUser extends Component {
             }
             else if (res.data.length === 0)
             {
-                
-                axios.post('http://localhost:5000/create', userObject)
-                .then((res) => {
-                    // console.log(res.msg);
                     axios({
                         method: "POST",
                         url:"http://localhost:5000/send",
@@ -134,8 +115,8 @@ export default class CreateUser extends Component {
                                 otp:response.data.otp
                             })
                             this.props.history.push({
-                                pathname : '/Checkotp' , 
-                                state : this.state.otp
+                                pathname : '/Checkout', 
+                                state : {detail : userObject,otp : this.state.otp}
                             });
                         }else if(response.data.msg === 'fail'){
                             alert("Oops, something went wrong. Try again")
@@ -143,10 +124,6 @@ export default class CreateUser extends Component {
                     }).catch((error) => {
                         console.log(error);
                     })
-                       // console.log(res.data.user.Password)
-                }).catch((error) => {
-                    console.log(error)
-                });
             }
         }).catch((error) => {
             console.log(error)
@@ -172,11 +149,11 @@ export default class CreateUser extends Component {
                 <h3>Sign Up</h3>
                 <div class="container">
                 <span class="icon"><i class="fas fa-user"></i></span>
-                <input type="text" value={this.state.Name} onChange={this.onChangeName} placeholder="username"/>
+                <input type="text" value={this.state.Name} onChange={this.onChangeName} placeholder="username"></input>
                 </div>
                 <div class="container">
                 <span class="icon"><i class="fas fa-at"></i></span>
-                <input type="email" value={this.state.Email} onChange={this.onChangeEmail} placeholder="email"/>
+                <input type="email" value={this.state.Email} onChange={this.onChangeEmail} placeholder="email"></input>
                 <div style={{ fontSize: 12, color: "red", fontVariantCaps :"titling-caps" ,fontFamily :"sans-serif" }}>
                      {this.state.Emailerror} 
                 </div>
@@ -201,7 +178,7 @@ export default class CreateUser extends Component {
             <Helmet>
                 <meta charSet="utf-8" />
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
-                <script>
+                {/* <script>
                     {`
                         var form = document.getElementById('form'); 
 
@@ -215,7 +192,7 @@ export default class CreateUser extends Component {
                             form.style.transform = 'rotateX(0deg) rotateY(0deg)';
                     })
                     `}
-                </script>
+                </script> */}
             </Helmet>
             </div>
             </div>
