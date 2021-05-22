@@ -52,10 +52,19 @@ app.get('/welcome',(req,res) => {
 app.use(express.json()); // To Parse the JSON Data to the API of the server and without it , it won't be able to get theJSON data
 app.use(cors());   // It is to give the other host to actually access this REST API
 
-app.use('/api',userRoute);
+// app.use('/api',userRoute);
 
-const SignToken = id => {
-    return jwt.sign({id} , process.env.JWT_SECRET,{
+// const SignToken = id => {
+//     return jwt.sign({id} , process.env.JWT_SECRET,{
+//         expiresIn: process.env.JWT_EXPIRES_IN
+//     });
+// }
+
+const SignToken = (id,uname) => {
+    return jwt.sign({
+        "uid" : id,
+        "uname" : uname
+    } , process.env.JWT_SECRET,{
         expiresIn: process.env.JWT_EXPIRES_IN
     });
 }
@@ -128,7 +137,8 @@ app.use('/users', function(req,res) {
         } else {
             res.json(data)
         }
-    })
+    }).sort({createdAt:-1})
+    
 })
 
 
@@ -179,8 +189,8 @@ app.use('/login', async (req, res,next) => {
         } else {
             // const {email} = req.body;
             const newuser = await user.findOne({Email : req.body.email});
-            console.log(newuser)
-            const token = SignToken(newuser._id);
+            // console.log(newuser)
+            const token = SignToken(newuser._id,newuser.Name);
             // console.log(token);
             if(result){
             await res.status(200).json({
@@ -194,10 +204,7 @@ app.use('/login', async (req, res,next) => {
             else{
                 await res.status(401).json({
                     status : 'fail',
-                    result,
-                    data : {
-                        user : newuser
-                    }
+                    result
                 })}
         } 
             // res.json(result)
@@ -205,13 +212,13 @@ app.use('/login', async (req, res,next) => {
 
 });
 
-app.get('/token', catchAsync(async (req,res,next) => {
+app.get('/token',verifyAccessToken, catchAsync(async (req,res,next) => {
     
-    console.log(req.payload);
-    // console.log(req.user);
-        res.json(req.payload);
+    // console.log(req.payload);
+    // console.log("hello");
+    res.send("true");
+        // res.json(req.payload);
 }))
-
 
 app.use('/find',(req,res,next) => {
         user.find(req.body, (error,data) => {
@@ -291,9 +298,9 @@ const server = app.listen(port, () => {
 })
 
 // Error Handling
-app.use((req, res, next) => {
-    next(createError(404));
-});
+// app.use((req, res, next) => {
+//     next(createError(404));
+// });
 
 
 app.use(globalErrorHandler)

@@ -40,7 +40,10 @@ const sendErrorProd = (err,res) => {
     if(err.isOperational) {
     res.status(err.statusCode).json({
         status:err.status,
+        statusCode:err.statusCode,
         message:err.message,
+        error:err,
+        stack:err.stack
     });
     // Programming or other unknown error: don't leak error status
     }
@@ -58,31 +61,31 @@ const sendErrorProd = (err,res) => {
 
 module.exports = (err, req, res, next) => {
     if (!err.statusCode) err.statusCode = 500;
-    // if(process.env.NODE_ENV === 'development') {
-    //     sendErrorDev(err,res);
-    // }
-    // else if(process.env.NODE_ENV ==='production'){
-    // let error = { ...err };
+    if(process.env.NODE_ENV === 'development') {
+        sendErrorDev(err,res);
+    }
+    else if(process.env.NODE_ENV ==='production'){
+    let error = { ...err };
 
-    // if(error.name === 'CastError') error = handleCastErrorDB(error);
-    // if(error.code === 11000) error = handleDuplicateFieldsDB(error);
-    // if(error.name === 'ValidationError') error = handleValidationError(error);
-    // if(error.name === 'JsonWebTokenError') error = handleJWTError();
-    // if(error.name === 'TokenExpiredError') error = handleJWTExpiredError();
+    if(error.name === 'CastError') error = handleCastErrorDB(error);
+    if(error.code === 11000) error = handleDuplicateFieldsDB(error);
+    if(error.name === 'ValidationError') error = handleValidationError(error);
+    if(error.name === 'JsonWebTokenError') error = handleJWTError();
+    if(error.name === 'TokenExpiredError') error = handleJWTExpiredError();
 
-    // sendErrorProd(error,res);
-    // }
+    sendErrorProd(error,res);
+    }
         // let error = { ...err };
 
-    if(err.name === 'CastError') error = handleCastErrorDB(error);
-    if(err.code === 11000) error = handleDuplicateFieldsDB(error);
-    if(err.name === 'ValidationError') error = handleValidationError(error);
-    if(err.name === 'JsonWebTokenError') error = handleJWTError();
-    if(err.name === 'TokenExpiredError') error = handleJWTExpiredError();
-    res.status(err.statusCode).json({
-        status:err.status,
-        message:err.message,
-        error:err,
-        stack:err.stack
-    });
+    // if(err.name === 'CastError') error = handleCastErrorDB(error);
+    // if(err.code === 11000) error = handleDuplicateFieldsDB(error);
+    // if(err.name === 'ValidationError') error = handleValidationError(error);
+    // if(err.name === 'JsonWebTokenError') error = handleJWTError();
+    // if(err.name === 'TokenExpiredError') error = handleJWTExpiredError();
+    // res.status(error.statusCode).json({
+    //     status:error.status,
+    //     message:error.message,
+    //     // error:error,
+    //     stack:error.stack
+    // });
 };

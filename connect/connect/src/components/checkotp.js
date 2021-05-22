@@ -44,8 +44,13 @@ export default class checkotp extends Component {
     render() {
             return (
             <div>
+                <br></br>
+                <br></br>
+                <br></br>
+                <br></br>
             <form onSubmit={this.onSubmit()}>
                 <div>
+
                 <label for="Otp">Enter Otp:</label>
                 <input type="text" value={this.state.otp} onChange={this.onChangeotp}></input><br></br>
                 <input type="submit" value="Submit" />

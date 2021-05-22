@@ -1,12 +1,8 @@
-// login.js
-/* global gapi */
 import React, { Component } from 'react';
 import axios from 'axios';
 import "./Loginstyle.css"
 import Header from "./header";
 export default class CreateUser extends Component {
-
-
     constructor(props) {
         super(props)
 
@@ -20,58 +16,6 @@ export default class CreateUser extends Component {
             isSignedin: false
         }
     }
-
-
-    // onSignIn(googleUser) {
-    //     console.log("hi");
-    //     var profile = googleUser.getBasicProfile();
-    //     console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-    //     console.log('Name: ' + profile.getName());
-    //     console.log('Image URL: ' + profile.getImageUrl());
-    //     console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-    //   }
-      
-
-    //   getContent() {
-    //     if (this.state.isSignedIn) {
-    //       return <p>hello user, you're signed in </p>
-    //     } else {
-    //       return (
-    //         <div>
-    //           {/* <p>You are not signed in. Click here to sign in.</p> */}
-    //           <button id="loginButton">Login with Google</button>
-    //         </div>
-    //       )
-    //     }
-        
-    //   }
-
-    //   onSuccess() {
-    //     this.setState({
-    //       isSignedIn: true
-    //     })
-    //   }
-
-
-    
-  
-
-    //   componentDidMount() {
-    //     window.gapi.load('auth2', () => {
-    //       this.auth2 = gapi.auth2.init({
-    //         client_id: '50791853619-pa8fvmnf8nqgi83ntvnh5r70v06au054.apps.googleusercontent.com',
-    //       })
-    //     })
-    //   }
-
-//     signOut() {
-//     console.log('hi')
-//     var auth2 = gapi.auth2.getAuthInstance();
-//     auth2.signOut().then(function () {
-//       console.log('User signed out.');
-//     });
-//   }
-
     onChangeEmail(e) {
         this.setState({ Email: e.target.value })
     }
@@ -98,6 +42,7 @@ export default class CreateUser extends Component {
             }
             else
             {
+                console.log(res.data);
                 const userdet = {
                     enterpass : userObject.Password,
                     retpass : res.data[0].Password,
@@ -106,25 +51,33 @@ export default class CreateUser extends Component {
                 axios.post('http://localhost:5000/login',userdet)
                 .then((res) => {
                     console.log(res.data.token);
-                    // const Token = "Bearer " + res.data.token;
-                    // const header = `Authorization: Bearer ${res.data.token}`;
+                    console.log(res.data.status);
+                    if(res.data.status === 'success'){
+                        // Login is successful
+                        // redirect to his profile or  main posts page
+                        localStorage.setItem('token',res.data.token) 
+                    }
+                    else{
+                        // Entered Wrong Password. Try again!
+                        // Redirect to login page
+                        console.log('entered wrong password');
+                    }
+                    // axios.get('http://localhost:5000/users')
+                    // .then((res) => {
+                    //     console.log(res.data);
+                    // })
                     console.log("client");
-                    // const id = {
-                    //     Authorization : Token
-                    // };
-                    // axios.post('http://localhost:5000/token',header)
-                    // .then((response) => {
-                    //     console.log(response);
-                    // })
-                    // .catch((error) => {
-                    //     console.log(error);
-                    // })
-                    axios.get('http://localhost:5000/token', { headers: {"Authorization" : `Bearer ${res.data.token}`} });
-                    // console.log(res.data.token);
-                    // console.log("hi");
+                    
+                    axios.get('http://localhost:5000/token', { headers: {"Authorization" : `Bearer ${res.data.token}`} })
+                    .then((res) => {
+                        console.log(res.data);
+                    })
+                    .catch((error) => {
+                        console.log(error.response.data);
+                    });
                 })
                 .catch((error) => {
-                    console.log(error)
+                    console.log(error.response.data)
                 })
             }
         }).catch((error) => {
@@ -136,29 +89,6 @@ export default class CreateUser extends Component {
       
     render() {
         return (
-            // <div className="wrapper">
-            //     <form onSubmit={this.onSubmit}>
-            //         <div class="mb-3">
-            //             <label for="exampleInputEmail1" class="form-label">Email address</label>
-            //             <input type="email" value={this.state.Email} onChange={this.onChangeEmail} className="form-control"class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-            //             {/* <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> */}
-            //         </div>
-            //             <div class="mb-3">
-            //                 <label for="exampleInputPassword1" class="form-label">Password</label>
-            //                 <input type="password" value={this.state.Password} onChange={this.onChangePassword} className="form-control" class="form-control" id="exampleInputPassword1" />
-            //             </div>
-
-            //         <div>
-            //             <p id="incorrect" style={{display: "none"}}> The details entered are incorrect </p>
-            //         </div>
-            //                     <button type="submit" value="Create User" class="btn btn-primary">Submit</button>
-            //     </form>
-
-
-            //     {/* <div class="g-signin2" data-onsuccess="onSignIn"></div> */}
-
-            //     {/* {this.getContent()} */}
-            //     </div>
             <div>
                 <Header />
                 <br />

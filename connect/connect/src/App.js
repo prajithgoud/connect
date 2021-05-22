@@ -1,38 +1,64 @@
-// import logo from './logo.svg';
 import './App.css';
+
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route,  } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, } from "react-router-dom";
+import { Provider } from "react-redux"
+import { createStore, applyMiddleware } from "redux";
+import reduxThunk from "redux-thunk";
+import axios from 'axios';
+
+import Header from "./components/header"
 import CreateUser from "./components/create-user.component";
 import Users from "./components/users.component";
 import dataTable from "./components/data-table"
 import Login from "./components/login"
 import Checkout from "./components/checkotp";
-import "./App.css"
-// import "../server/routes/user.routes"
 import Welcome from "./components/welcome";
 
+import reducers from "./reducers/root_reducer";
+import { AUTH_USER } from "./actions/types";
+
+const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore);
+const store = createStoreWithMiddleware(reducers);
+
+const token = localStorage.getItem("token")
+
+if (token !== null) {
+  axios.get('http://localhost:5000/token', { headers: { "Authorization": `Bearer ${token}` } })
+    .then((res) => {
+      if (res.data === true) {
+        store.dispatch({ type: AUTH_USER })
+      }
+    })
+    .catch((error) => {
+      console.log(error.response.data)
+    });
+}
+
+
 function App() {
-  return (<Router>
-    <div className="App">
-     
-      <div className="container">
-        <div className="row">
-          <div className="col-md-12">
-            <Switch>
+  return (
+    <Provider store={store} >
+      <Router>
+        <div>
+          <Header />
+          <div>
             <Route exact path="/" component={Welcome} />
+          </div>
+          <div clasname="container" id="content">
+            <switch>
+              <Route exact path="/" component={Welcome} />
               <Route path="/signin" component={CreateUser} />
               <Route path="/login" component={Login} />
               <Route path="/users" component={Users} />
               <Route path="/datatable" component={dataTable} />
-              <Route path = "/Checkout" component={Checkout} />
-              {/* <Route path="/Login" component={Login} /> */}
-            </Switch>
+              <Route path="/checkout" component={Checkout} />
+            </switch>
           </div>
         </div>
-      </div>
-    </div>
-  </Router>
-  );
+      </Router>
+    </Provider>
+  )
 }
 
 export default App;

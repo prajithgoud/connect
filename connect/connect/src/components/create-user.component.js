@@ -3,11 +3,18 @@ import axios from 'axios';
 import "./Signup.css";
 import Header from "./header";
 import Helmet from 'react-helmet';
+import { connect } from 'react-redux';
 
 
-export default class CreateUser extends Component {
+class CreateUser extends Component {
 
-
+    componentDidMount()
+    {
+        if(this.props.authenticated)
+        {
+            this.props.history.replace('/posts');
+        }
+    }
     constructor(props) {
         super(props)
 
@@ -16,6 +23,7 @@ export default class CreateUser extends Component {
         this.onChangeName = this.onChangeName.bind(this);
         this.onChangeConfirm = this.onChangeConfirm.bind(this);
         this.onChangedepartment = this.onChangedepartment.bind(this);
+        this.onChangerole = this.onChangerole.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.state = {
             Email: '',
@@ -24,7 +32,8 @@ export default class CreateUser extends Component {
             Name: '',
             Confirm: '',
             department: '',
-            otp: ''
+            otp: '',
+            Role:''
         }
     }
 
@@ -64,7 +73,9 @@ export default class CreateUser extends Component {
     onChangeConfirm(e) {
         this.setState({ Confirm : e.target.value })
     }
-
+    onChangerole(e) {
+        this.setState({Role : e.target.value })
+    }
  
 
     
@@ -77,7 +88,8 @@ export default class CreateUser extends Component {
             Email: this.state.Email,
             Password:this.state.Password,
             Name: this.state.Name,
-            department: this.state.department
+            department: this.state.department,
+            Role:this.state.Role
         };
 
         
@@ -130,7 +142,7 @@ export default class CreateUser extends Component {
         });
 
         // this.setState({ Email: '', Password: '' })
-        this.setState({ Email: '', Password: '',Emailerror:'', Name: '' ,Confirm: '',department: ''});
+        this.setState({ Email: '', Password: '',Emailerror:'', Name: '' ,Confirm: '',department: '',Role :''});
 
     }
     }
@@ -157,6 +169,14 @@ export default class CreateUser extends Component {
                 <div style={{ fontSize: 12, color: "red", fontVariantCaps :"titling-caps" ,fontFamily :"sans-serif" }}>
                      {this.state.Emailerror} 
                 </div>
+                </div>
+                <div class = "container">
+                <span class="icon"><i class='fas fa-graduation-cap'></i></span>
+                <input type="text" value={this.state.department} onChange={this.onChangedepartment} placeholder="Department"/>
+                </div>
+                <div class = "container">
+                <span class="icon"><i class='fas fa-id-card'></i></span>
+                <input type = "text" value = {this.state.Role} onChange={this.onChangerole} placeholder="Role"/>
                 </div>
                 <div class="container">
                 <span class="icon"><i class="fas fa-lock"></i></span>
@@ -200,3 +220,13 @@ export default class CreateUser extends Component {
     }
 
 }
+
+function mapStatetoProps(state) {
+    console.log(state)
+    return {
+        authenticated : state.auth.authenticated,
+        username :state.username
+    }
+}
+
+export default connect(mapStatetoProps)(CreateUser);

@@ -16,18 +16,18 @@ let userSchema = new Schema({
     Photo: String,
     Role: {
         type: String,
-        enum : ['Admin','Student','StarUser'],
-        default : 'Student'
+        enum : ['Admin','Student','StarUser']
+        // default : 'Student'
     },
     Password: {
         type: String,
         minlength : 8
         // select : false,
         // required:true
+    },
+    department: {
+        type: String
     }
-    // department: {
-    //     type: String
-    // }
 }, {
         collection: 'registration',
         timestamps:true
