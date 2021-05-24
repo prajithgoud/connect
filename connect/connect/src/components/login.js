@@ -56,6 +56,17 @@ export default class CreateUser extends Component {
                         // Login is successful
                         // redirect to his profile or  main posts page
                         localStorage.setItem('token',res.data.token) 
+                        axios.get('http://localhost:5000/token', { headers: {"Authorization" : `Bearer ${res.data.token}`} })
+                    .then((res) => {
+                        console.log(res.data);
+                    })
+                    .catch((error) => {
+                        console.log(error.response.data);
+                    });
+                    this.props.history.push({
+                        pathname : '/posts'
+                        // state : {detail : userObject,otp : this.state.otp}
+                    });
                     }
                     else{
                         // Entered Wrong Password. Try again!
@@ -68,13 +79,13 @@ export default class CreateUser extends Component {
                     // })
                     console.log("client");
                     
-                    axios.get('http://localhost:5000/token', { headers: {"Authorization" : `Bearer ${res.data.token}`} })
-                    .then((res) => {
-                        console.log(res.data);
-                    })
-                    .catch((error) => {
-                        console.log(error.response.data);
-                    });
+                    // axios.get('http://localhost:5000/token', { headers: {"Authorization" : `Bearer ${res.data.token}`} })
+                    // .then((res) => {
+                    //     console.log(res.data);
+                    // })
+                    // .catch((error) => {
+                    //     console.log(error.response.data);
+                    // });
                 })
                 .catch((error) => {
                     console.log(error.response.data)

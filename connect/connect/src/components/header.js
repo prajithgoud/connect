@@ -90,14 +90,14 @@ import jwt from "jsonwebtoken";
 import "./destination/style.css";
 import { Link } from "react-router-dom"
 
-const uname = ''
+let uname = ''
 
 class Header extends Component {
 
 
   // const uname = ''
 
-  componentDidMount()
+  componentDidUpdate()
   {
     if(this.props.authenticated)
     {
@@ -119,11 +119,15 @@ renderLinks() {
     
   </button>
   <ul class="dropdown-menu">
-    <li><a class="dropdown-item" href="#">Action</a></li>
+    {/* <li><a class="dropdown-item" href="#">Action</a></li>
     <li><a class="dropdown-item" href="#">Another action</a></li>
     <li><a class="dropdown-item" href="#">Something else here</a></li>
     <li><hr class="dropdown-divider" /></li>
-    <li><a class="dropdown-item" href="#">Separated link</a></li>
+    <li><a class="dropdown-item" href="#">Separated link</a></li> */}
+    <li><a class="dropdown-item" href="#">Your profile</a></li>
+    <li><a class="dropdown-item" href="#">Settings</a></li>
+    <li><hr class="dropdown-divider" /></li>
+    <li><button onClick = {() => {localStorage.removeItem('token')}}>Sign out</button></li>
   </ul>
 </div>
     );
@@ -184,7 +188,6 @@ render() {
 }
 
 function mapStatetoProps(state) {
-  console.log('sss');
   console.log(state);
   return {
     authenticated: state.auth.authenticated,

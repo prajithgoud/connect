@@ -14,7 +14,8 @@ import dataTable from "./components/data-table"
 import Login from "./components/login"
 import Checkout from "./components/checkotp";
 import Welcome from "./components/welcome";
-
+import PostList from "./components/posts/posts_list";
+import Postnew from "./components/posts/posts_new";
 import reducers from "./reducers/root_reducer";
 import { AUTH_USER } from "./actions/types";
 
@@ -53,6 +54,8 @@ function App() {
               <Route path="/users" component={Users} />
               <Route path="/datatable" component={dataTable} />
               <Route path="/checkout" component={Checkout} />
+              <Route path="/posts" component={PostList} />
+              <Route path="/postnew" component={Postnew} />
             </switch>
           </div>
         </div>

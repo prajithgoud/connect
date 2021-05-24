@@ -21,7 +21,7 @@ let postSchema = new Schema({
   },
   time: {
       type: Date
-  },
+  }
 });
 
-module.exports = mongoose.model('posts,',postSchema)
+module.exports = mongoose.model('posts',postSchema)

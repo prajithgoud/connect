@@ -6,6 +6,7 @@ const path = require('path');
 const expbhs = require('express-handlebars');
 let database = require('./database/db');
 let user = require('./models/user-schema');
+let posts = require('./models/post-schema')
 const createError = require('http-errors');
 const userRoute = require('./routes/user.routes');
 const jwt = require('jsonwebtoken');
@@ -127,7 +128,7 @@ transporter.sendMail(mailOptions, (error, info) => {
     })
 });
 
-  
+app.use('/api',userRoute)
 
 // Different App Routes
 app.use('/users', function(req,res) {
@@ -141,7 +142,16 @@ app.use('/users', function(req,res) {
     
 })
 
-
+// app.use('/createpost',(req,res,next) => {
+//     posts.create(req.body, (error, data) => {
+//         if (error) 
+//             return next(error)
+//          else {
+//             console.log(data);
+//             res.json(data);
+//         }
+//         });
+// })
 
 // Used bcrypt(Blowfish Cypher) algorithm for password hashing
 // Added JWT Token to SignUp
@@ -213,6 +223,14 @@ app.use('/login', async (req, res,next) => {
 });
 
 app.get('/token',verifyAccessToken, catchAsync(async (req,res,next) => {
+    
+    // console.log(req.payload);
+    // console.log("hello");
+    res.send("true");
+        // res.json(req.payload);
+}))
+
+app.get('/token/restriction',verifyAccessTokenWithRestriction, catchAsync(async (req,res,next) => {
     
     // console.log(req.payload);
     // console.log("hello");

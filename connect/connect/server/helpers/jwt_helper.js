@@ -60,7 +60,7 @@ module.exports = {
     console.log(decoded);
     
     // 3) Checking if user still exists
-    const freshUser = await user.findById(decoded.id);
+    const freshUser = await user.findById(decoded.uid);
     // console.log(freshUser);
     if(!freshUser) {
         return next(new AppError('The User belonging to this token no longer exists!',401));
