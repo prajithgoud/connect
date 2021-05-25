@@ -127,12 +127,7 @@ class Header extends Component {
   // const uname = ''
   signoutuser () {
     localStorage.removeItem('token');
-    // this.props.history.push({
-    //   pathname :'/posts'
-    // });
     window.location.reload(false);
-    // this.props.router.push('/');
-    // browserHistory.push('/');
   };
 
   componentDidMount()

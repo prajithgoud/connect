@@ -75,9 +75,10 @@
 let mongoose = require('mongoose')
 let express = require('express');
 let router = express.Router();
-
+let jwt = require('jsonwebtoken')
 let posts = require('../models/post-schema')
 let user = require('../models/user-schema')
+let comment = require('../models/comments_schema')
 const {verifyAccessToken,verifyAccessTokenWithRestriction} = require('../helpers/jwt_helper');
 
 
@@ -120,6 +121,34 @@ router.route('/createpost').post((req, res,next) => {
 
 
     });
+
+router.route('/createcomment').post((req, res, next) => {
+
+    // const token = req.headers.authorization.split(' ')[1];
+    const token = req.body.token;
+    const info = jwt.decode(token, process.env.JWT_SECRET)
+    console.log(token);
+    const content = req.body.content;
+    const postId = req.body.postId
+    // const authorId = info.uid 
+    const authorName = info.uname
+    console.log(content,postId)
+
+    comment.create({
+        postId: postId,
+        content: content,
+        authorName: authorName,
+        time: Date.now()
+    }, (err, data) => {
+        if (err) {
+            return next(err)
+        }
+        else {
+            res.json(data)
+        }
+    })
+})
+
 router.route('/post').get((req, res,next) => {
     posts.find((error, data) => {
         if (error) {
@@ -130,6 +159,20 @@ router.route('/post').get((req, res,next) => {
         }
     }).sort({time:-1})
 })
+
+router.route('/comments/:id').get((req, res) => {
+    console.log('hello');
+    comment.find({
+        postId: req.params.id
+    }, (error, data) => {
+        if (error) {
+            return next(error)
+        } else {
+            res.json(data)
+        }
+    })
+})
+
 
 router.route('/users').get((req, res) => {
     user.find((error, data) => {

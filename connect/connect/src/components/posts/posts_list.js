@@ -13,29 +13,29 @@ class PostList extends Component {
     this.props.fetchPosts();
   }
   
-  
-  // componentDidUpdate() {
-  //   this.reload()
-  // }
-  // renderTags(tags) {
-  //   return tags.map(tag => {
-  //     return <span className="badge badge-info span-with-margin" key={tag}>{tag}</span>;
-  //   });
-  // }
+  renderTags(tags) {
+    return tags.map(tag => {
+      return <span className="" key={tag}>{tag}</span>;
+    });
+  }
 
   renderPostSummary(post) {
     return (
       <div key={post._id}>
         <span className="span-with-margin text-grey"> • </span><br></br>
-        {/* <span className="span-with-margin text-grey">{post.authorName}</span><br></br> */}
+        <span className="span-with-margin text-grey">Author : {post.authorName}</span><br></br>
         <span className="span-with-margin text-grey"> • </span>
-        {/* <span className="span-with-margin text-grey">{new Date(post.time).toLocaleString()}</span> */}
+        <span className="span-with-margin text-grey">{new Date(post.time).toLocaleString()}</span>
         <h3>
-          <Link className="link-without-underline" to={`/posts/${post._id}`}>
+          {/* <Link className="link-without-underline" to={`/posts/${post._id}`}>
             {post.title}
-          </Link>
+          </Link> */}
           <div className="text-justify" dangerouslySetInnerHTML={{ __html: post.content }} />
         </h3>
+        <br />
+        <Link className="link-without-underline" to={`/commentnew/${post._id}`}> Comment </Link>
+        <br />
+        <Link className="link-without-underline" to={`/comments/${post._id}`}> View Comment </Link>
         {/* {this.renderTags(post.categories)} */}
         <hr />
       </div>
@@ -71,7 +71,10 @@ function mapStateToProps(state) {
     // window.location.reload(false);
     console.log(state)
 
-  return { posts: state.posts };
+  return {
+    authenticated: state.auth.authenticated, 
+    posts: state.posts 
+  };
 }
 
 export default connect(mapStateToProps , { fetchPosts })(PostList);

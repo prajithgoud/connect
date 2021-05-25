@@ -144,11 +144,11 @@ class CreateUser extends Component {
                             alert("Oops, something went wrong. Try again")
                         }
                     }).catch((error) => {
-                        console.log(error);
+                        console.log(error.response.data);
                     })
             }
         }).catch((error) => {
-            console.log(error)
+            console.log(error.response.data)
         });
 
         // this.setState({ Email: '', Password: '' })

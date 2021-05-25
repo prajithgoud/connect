@@ -16,6 +16,8 @@ import Checkout from "./components/checkotp";
 import Welcome from "./components/welcome";
 import PostList from "./components/posts/posts_list";
 import Postnew from "./components/posts/posts_new";
+import CommentNew from "./components/posts/posts_detail/comment_new";
+import Comments from "./components/posts/posts_detail/comments";
 import reducers from "./reducers/root_reducer";
 import { AUTH_USER } from "./actions/types";
 import Pageloader from './components/PageLoader';
@@ -59,6 +61,8 @@ function App() {
               <Route path="/checkout" component={Checkout} />
               <Route path="/posts" component={PostList} />
               <Route path="/postnew" component={Postnew} />
+              <Route path="/commentnew/:id" component={CommentNew} />
+              <Route path="/comments/:id" component={Comments} />
               <Pageloader />
               <Signupsuccess />
             </switch>
