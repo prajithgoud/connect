@@ -1,6 +1,6 @@
 import './App.css';
 
-import React from 'react';
+import React , {useEffect} from 'react';
 import { BrowserRouter as Router, Switch, Route, } from "react-router-dom";
 import { Provider } from "react-redux"
 import { createStore, applyMiddleware } from "redux";
@@ -18,6 +18,8 @@ import PostList from "./components/posts/posts_list";
 import Postnew from "./components/posts/posts_new";
 import reducers from "./reducers/root_reducer";
 import { AUTH_USER } from "./actions/types";
+import Pageloader from './components/PageLoader';
+import Signupsuccess from './components/Signupsuccess';
 
 const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore);
 const store = createStoreWithMiddleware(reducers);
@@ -38,6 +40,7 @@ if (token !== null) {
 
 
 function App() {
+
   return (
     <Provider store={store} >
       <Router>
@@ -56,6 +59,8 @@ function App() {
               <Route path="/checkout" component={Checkout} />
               <Route path="/posts" component={PostList} />
               <Route path="/postnew" component={Postnew} />
+              <Pageloader />
+              <Signupsuccess />
             </switch>
           </div>
         </div>

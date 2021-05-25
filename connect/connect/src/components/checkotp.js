@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { hideaccountCreated, showaccountCreated } from '../actions';
+import { connect } from 'react-redux';
+class checkotp extends Component {
 
-export default class checkotp extends Component {
+    update = () => {
+        this.props.dispatch((showaccountCreated()))
+        setTimeout(() => {
+            this.props.dispatch(hideaccountCreated())
+        },6000);
+    }
 
     constructor(props) {
         super(props)
@@ -32,9 +40,13 @@ export default class checkotp extends Component {
                 .then((res) => {
                     console.log("create");
                     console.log(res.data);
+                    this.props.history.push({
+                        pathname : '/login'
+                        // state : {detail : userObject,otp : this.state.otp}
+                    });
                 })
                 .catch((error) => {
-                    console.log(error)
+                    console.log(error.response.data)
                 });
         }
         else{
@@ -53,10 +65,22 @@ export default class checkotp extends Component {
 
                 <label for="Otp">Enter Otp:</label>
                 <input type="text" value={this.state.otp} onChange={this.onChangeotp}></input><br></br>
-                <input type="submit" value="Submit" />
+                <input type="submit" onClick = {this.update} value="Submit" />
                 </div>
             </form>
             </div>
         )
     }
 }
+
+
+function mapStatetoProps(state) {
+    console.log(state)
+    return {
+        authenticated : state.auth.authenticated,
+        loading : state.auth.loading,
+        accountCreated : state.auth.accountCreated
+    }
+}
+
+export default connect(mapStatetoProps)(checkotp);

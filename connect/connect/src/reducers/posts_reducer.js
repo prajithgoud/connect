@@ -3,6 +3,11 @@ import {
     FETCH_POSTS,
 } from '../actions/types';
 
+// const initialState = {
+//   payload : "",
+//   loading : false
+// };
+
 export default function(state = {}, action) {
     // Attention!!! The state object here refers to state.posts, instead of the application state.
   

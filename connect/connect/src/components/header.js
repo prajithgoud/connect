@@ -82,23 +82,62 @@
 //   }
 // }
 
-import React, { Component } from "react";
+import React, { Component ,useEffect} from "react";
 import axios from 'axios';
 import Welcome from "./welcome";
+import { browserHistory } from 'react-router';
 import { connect } from "react-redux";
 import jwt from "jsonwebtoken";
 import "./destination/style.css";
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+import Reload from "./Reload";
 
 let uname = ''
 
+
+// function App() {
+//   localStorage.removeItem('token')
+
+//   const reloadCount = Number(sessionStorage.getItem('reloadCount')) || 0;
+
+//   useEffect(() => {
+//     if(reloadCount < 1) {
+//       sessionStorage.setItem('reloadCount', String(reloadCount + 1));
+//       window.location.reload();
+//     } else {
+//       sessionStorage.removeItem('reloadCount');
+//     }
+//   }, []);
+//   return (
+//     <div>{ JSON.stringify({ reloadCount }) }</div>
+//   );
+// }
 class Header extends Component {
 
+  constructor(props) {
+    super(props)
+  
+    this.state = {
+       
+    }
+    this.signoutuser = this.signoutuser.bind(this);
+  }
+  
 
   // const uname = ''
+  signoutuser () {
+    localStorage.removeItem('token');
+    // this.props.history.push({
+    //   pathname :'/posts'
+    // });
+    window.location.reload(false);
+    // this.props.router.push('/');
+    // browserHistory.push('/');
+  };
 
-  componentDidUpdate()
+  componentDidMount()
   {
+    // window.location.reload(false);
     if(this.props.authenticated)
     {
       console.log('true')
@@ -127,8 +166,10 @@ renderLinks() {
     <li><a class="dropdown-item" href="#">Your profile</a></li>
     <li><a class="dropdown-item" href="#">Settings</a></li>
     <li><hr class="dropdown-divider" /></li>
-    <li><button onClick = {() => {localStorage.removeItem('token')}}>Sign out</button></li>
+    <li><a class = "dropdown-item" ><button onClick = {this.signoutuser}> Sign out</button></a></li>
   </ul>
+  {/* <Reload /> */}
+
 </div>
     );
   } else {
@@ -188,9 +229,9 @@ render() {
 }
 
 function mapStatetoProps(state) {
-  console.log(state);
+  // console.log(state);
   return {
-    authenticated: state.auth.authenticated,
+    authenticated: state.auth.authenticated
   }
 }
 

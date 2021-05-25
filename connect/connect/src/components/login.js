@@ -1,8 +1,25 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
 import "./Loginstyle.css"
 import Header from "./header";
-export default class CreateUser extends Component {
+import Pageloader from './PageLoader';
+import { hideLoader, showLoader } from '../actions';
+class CreateUser extends Component {
+    componentDidMount()
+    {
+        if(this.props.authenticated)
+        {
+            this.props.history.replace('/posts');
+        }
+    }
+
+    update = () => {
+        this.props.dispatch(showLoader())
+        setTimeout(() => {
+            this.props.dispatch(hideLoader())
+        },3000);
+    }
     constructor(props) {
         super(props)
 
@@ -121,13 +138,23 @@ export default class CreateUser extends Component {
                 <div>
                    <p id="incorrect" style={{display: "none"}}> The details entered are incorrect </p>
                 </div>
-            <button class="signin-button">Login</button>
+            <button class="signin-button" onClick = {this.update}>Login</button>
             <div class="link">
                 <a href="#">Forgot password?</a> or <a href="#">Sign up</a>
             </div>
             </form>
+            {/* <Pageloader /> */}
             </div>
             </div>
         )
     }
 }
+function mapStatetoProps(state) {
+    console.log(state)
+    return {
+        authenticated : state.auth.authenticated,
+        loading : state.auth.loading
+    }
+}
+
+export default connect(mapStatetoProps)(CreateUser);

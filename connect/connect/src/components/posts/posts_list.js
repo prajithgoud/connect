@@ -1,18 +1,18 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
+import React, { Component ,useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { fetchPosts } from "../../actions/index"
 import Header from "../header";
+import Reload from "../Reload";
+
 
 class PostList extends Component {
 
-  reload = () => {
-    window.location.reload(false);
-  }
   componentDidMount() {
     this.props.fetchPosts();
   }
+  
   
   // componentDidUpdate() {
   //   this.reload()
@@ -26,7 +26,6 @@ class PostList extends Component {
   renderPostSummary(post) {
     return (
       <div key={post._id}>
-       
         <span className="span-with-margin text-grey"> • </span><br></br>
         {/* <span className="span-with-margin text-grey">{post.authorName}</span><br></br> */}
         <span className="span-with-margin text-grey"> • </span>
@@ -44,9 +43,12 @@ class PostList extends Component {
   }
 
   render() {
+    // this.reload();
+    
     return (
       <div>
         <Header />
+        <Reload />
       <br></br>
       <br></br>
       <br></br>
@@ -55,6 +57,8 @@ class PostList extends Component {
         {_.map(this.props.posts, post => {
           return this.renderPostSummary(post);
         })}
+      {/* {this.reload()} */}
+      {/* <button onClick = {this.reload}>Click me</button> */}
       </div>
       </div>
     );

@@ -17,6 +17,29 @@ export function fetchPosts() {
   }
 }
 
+export const showLoader = () => dispatch => {
+  dispatch({
+    type:"SHOW_LOADER"
+  })
+}
+
+export const hideLoader = () => dispatch => {
+  dispatch({
+    type:"HIDE_LOADER"
+  })
+}
+
+export const showaccountCreated = () => dispatch => {
+  dispatch({
+    type:"SHOW_ACCOUNT_CREATED"
+  })
+}
+
+export const hideaccountCreated = () => dispatch => {
+  dispatch({
+    type:"HIDE_ACCOUNT_CREATED"
+  })
+}
 // export function createPost({ title, categories, content }, historyPush, historyReplace) {
 
 //   return function(dispatch) {

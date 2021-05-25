@@ -4,9 +4,19 @@ import "./Signup.css";
 import Header from "./header";
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-
+import {showLoader,hideLoader} from '../actions';
 
 class CreateUser extends Component {
+
+    update = () => {
+
+        // window.location.reload(false);
+        this.props.dispatch(showLoader())
+        // this.setState({});
+        setTimeout(() => {
+            this.props.dispatch(hideLoader())
+        },3000);
+    }
 
     componentDidMount()
     {
@@ -192,7 +202,7 @@ class CreateUser extends Component {
                 <p id="incorrect" style={{display: "none"}}> Your account already exists </p>
                 
                 </div>
-                <input type="submit" value="Register" />
+                <input type="submit" onClick = {this.update} value="Register" />
                 
             </form>
             <Helmet>
@@ -225,7 +235,6 @@ function mapStatetoProps(state) {
     console.log(state)
     return {
         authenticated : state.auth.authenticated,
-        username :state.username
     }
 }
 
