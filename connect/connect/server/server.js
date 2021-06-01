@@ -1,6 +1,6 @@
 let express = require('express');
 let mongoose = require('mongoose');
-let cors = require('cors');
+const cors = require('cors');
 let bodyParser = require('body-parser');
 const path = require('path');
 const expbhs = require('express-handlebars');
@@ -21,7 +21,30 @@ require("./database/db");
 const nodemailer = require('nodemailer');
 const creds = require('./config');
 const { getMaxListeners } = require('./models/user-schema');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
+const hpp = require('hpp');
+const cookieParser = require('cookie-parser');
+
+
 const app = express();
+
+
+// Global Middleware
+
+// Limit Requests from same API
+
+const limiter = rateLimit({
+    max:100,
+    windowMs: 60*60*1000, //100 Requests from same IP in one hour
+    message : 'Too many request from this IP , please try again in an hour!'
+});
+
+
+// Setting security HTTP headers
+    app.use(helmet()); 
 
 // EXCEPTION HANDLING
 process.on('uncaughtException',err => {
@@ -31,18 +54,25 @@ process.on('uncaughtException',err => {
         process.exit(1);
     });
 });
-// BodyParser middleware
+// BodyParser middleware 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
   }));
 
-app.engine('handlebars',expbhs({
-    // extname: "handlebars",
-    defaultLayout: false,
-    // layoutsDir: path.join(__dirname, "views")
-  }));
-app.set('view engine', 'handlebars');
+// app.engine('handlebars',expbhs({
+//     // extname: "handlebars",
+//     defaultLayout: false,
+//     // layoutsDir: path.join(__dirname, "views")
+//   }));
+// app.set('view engine', 'handlebars');
+
+app.set('view engine','pug');
+app.set('views',path.join(__dirname,'views'))  
+
+// Serving statis files
+
+// app.use(express.static(path.join(__dirname,'public')));
 
 app.use('/public',express.static(path.join(__dirname, "public")));
 
@@ -51,7 +81,24 @@ app.get('/welcome',(req,res) => {
 })
 
 app.use(express.json()); // To Parse the JSON Data to the API of the server and without it , it won't be able to get theJSON data
-app.use(cors());   // It is to give the other host to actually access this REST API
+
+// Data sanitization against : NoSQL query injection
+app.use(mongoSanitize());
+// Data sanitization against XSS
+app.use(xss());
+// Prevent parameter pollution
+app.use(hpp());
+
+app.use(cookieParser());
+
+app.use(cors({credentials : true ,origin : 'http://localhost:3000'}));   // It is to give the other host to actually access this REST API
+
+
+// Template routes
+
+app.get('/hola',(req,res) => {
+    res.render('base');
+});
 
 // app.use('/api',userRoute);
 
@@ -142,6 +189,10 @@ app.use('/users', function(req,res) {
     
 })
 
+app.use('/casual',(req,res) => {
+    console.log("hola");
+    res.send("true");
+})
 // app.use('/createpost',(req,res,next) => {
 //     posts.create(req.body, (error, data) => {
 //         if (error) 
@@ -190,7 +241,7 @@ app.use('/create', (req, res, next) => {
 
 // Added JWT token to login
 
-app.use('/login', async (req, res,next) => {
+app.use('/login',limiter, async (req, res,next) => {
     // console.log(req.body)
     const {enterpass,retpass,email} = req.body;
     bcrypt.compare(req.body.enterpass,req.body.retpass, catchAsync(async function(err,result) {
@@ -201,11 +252,19 @@ app.use('/login', async (req, res,next) => {
             const newuser = await user.findOne({Email : req.body.email});
             // console.log(newuser)
             const token = SignToken(newuser._id,newuser.Name);
+            const cookieOptions = {
+                    expires : new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+                    // secure:true,
+                    httpOnly:true //So that the cookie cannot be accessed or modified anyway by the browser
+                } 
+            // res.cookie('jwt',token , cookieOptions);
+              
             // console.log(token);
             if(result){
             await res.status(200).json({
                 status : 'success',
                 token,
+                jwt,
                 result,
                 data : {
                     user : newuser
@@ -222,17 +281,32 @@ app.use('/login', async (req, res,next) => {
 
 });
 
+// app.get('/createcookie',(req,res) => {
+//     res.status(202).cookie('jwt',token,{
+//         path :'/',
+//         httpOnly : true,
+//         // secure:true,
+//         expires : new Date(new Date().getTime()  +  24 * 60 * 60 * 1000)
+//     }).send('Cookie is initialised');
+// })
+
+// app.get('/deletecookie',(req,res) => {
+//     res.status(202).clearCookie('jwt').send('Cookie cleared');
+// })
+
+
 app.get('/token',verifyAccessToken, catchAsync(async (req,res,next) => {
     
     // console.log(req.payload);
     // console.log("hello");
     res.send("true");
+   
         // res.json(req.payload);
 }))
 
 app.get('/token/restriction',verifyAccessTokenWithRestriction, catchAsync(async (req,res,next) => {
     
-    // console.log(req.payload);
+    console.log(req.payload);
     // console.log("hello");
     res.send("true");
         // res.json(req.payload);

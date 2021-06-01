@@ -78,3 +78,81 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps , { fetchPosts })(PostList);
+
+// import _ from 'lodash';
+// import React, { Component } from 'react';
+// import { Link } from 'react-router-dom';
+// import { connect } from 'react-redux';
+// import { fetchPosts } from "../../actions/index"
+// import { Redirect } from 'react-router-dom';
+// import Header from "../header"
+// import Comments from "./posts_detail/comments"
+// import Commentnew from "./posts_detail/comment_new"
+// import Reload from "../Reload";
+
+// class PostList extends Component {
+
+//   componentDidMount() {
+//     this.props.fetchPosts();
+//   }
+
+//   renderTags(tags) {
+//     return tags.map(tag => {
+//       return <span className="" key={tag}>{tag}</span>;
+//     });
+//   }
+
+
+//   renderPostSummary(post) {
+//     return (
+//       <div key={post._id}>
+
+//         {/* {this.renderTags(post.categories)} */}
+//         <span className="span-with-margin text-grey"> • </span>
+//         <span className="span-with-margin text-grey">Author: {post.authorName}</span>
+//         <span className="span-with-margin text-grey"> • </span>
+//         <span className="span-with-margin text-grey">{new Date(post.time).toLocaleString()}</span>
+//         <h3>
+//           {/* <Link className="link-without-underline" to={`/posts/${post._id}`}>
+//             {post.title}
+//           </Link> */}
+//           <div className="text-justify" dangerouslySetInnerHTML={{ __html: post.content }} />
+//         </h3>
+//         {/* <Link className="link-without-underline" to={`/commentnew/${post._id}`}> Comment </Link> */}
+//         <Commentnew id={post._id} />
+
+//         <Comments id={post._id} />
+//         <hr />
+//       </div>
+//     );
+//   }
+
+//   render() {
+//     return (
+//       <div className="post">
+//         <Header />
+//         <Reload />
+//        <br></br>
+//        <br></br>
+//        <br></br>
+//         {/* <Header /> */}
+//         <Link className="btn btn-primary mb-5" to={'/postnew'}>Publish A New Post</Link>
+//         {_.map(this.props.posts, post => {
+//           return this.renderPostSummary(post);
+//         })}
+//       </div>
+//     );
+//   }
+// }
+
+
+
+// function mapStateToProps(state) {
+//   console.log(state)
+//   return {
+//     authenticated: state.auth.authenticated,
+//     posts: state.posts
+//   };
+// }
+
+// export default connect(mapStateToProps, { fetchPosts })(PostList)

@@ -85,48 +85,34 @@
 import React, { Component ,useEffect} from "react";
 import axios from 'axios';
 import Welcome from "./welcome";
-import { browserHistory } from 'react-router';
+import { browserHistory as Router, useHistory} from 'react-router-dom';
 import { connect } from "react-redux";
 import jwt from "jsonwebtoken";
 import "./destination/style.css";
 import { Link } from "react-router-dom";
 import Reload from "./Reload";
+import { withRouter } from 'react-router';
+
 
 let uname = ''
-
-
-// function App() {
-//   localStorage.removeItem('token')
-
-//   const reloadCount = Number(sessionStorage.getItem('reloadCount')) || 0;
-
-//   useEffect(() => {
-//     if(reloadCount < 1) {
-//       sessionStorage.setItem('reloadCount', String(reloadCount + 1));
-//       window.location.reload();
-//     } else {
-//       sessionStorage.removeItem('reloadCount');
-//     }
-//   }, []);
-//   return (
-//     <div>{ JSON.stringify({ reloadCount }) }</div>
-//   );
-// }
 class Header extends Component {
 
   constructor(props) {
     super(props)
-  
-    this.state = {
-       
-    }
     this.signoutuser = this.signoutuser.bind(this);
   }
   
 
   // const uname = ''
-  signoutuser () {
+  signoutuser (e) {
     localStorage.removeItem('token');
+    axios.get('http://localhost:5000/deletecookie',{ withCredentials : true})
+    .then(res => {
+        console.log(res.data);
+    })
+    this.props.history.push({
+      pathname : '/'
+    });
     window.location.reload(false);
   };
 
@@ -138,7 +124,7 @@ class Header extends Component {
       console.log('true')
       const token = localStorage.getItem('token')
       const info = jwt.decode(token,process.env.JWT_SECRET)
-      uname = info.uname;
+      // uname = info.uname;
     }
   }
 
@@ -230,4 +216,4 @@ function mapStatetoProps(state) {
   }
 }
 
-export default connect(mapStatetoProps)(Header);
+export default withRouter(connect(mapStatetoProps)(Header));

@@ -22,13 +22,23 @@ import reducers from "./reducers/root_reducer";
 import { AUTH_USER } from "./actions/types";
 import Pageloader from './components/PageLoader';
 import Signupsuccess from './components/Signupsuccess';
+// import { Token } from '../server/server';
+
+// import Cookies from 'js-cookie';
+// import  { Cookies } from 'react-cookie';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
+
+// cookies.set('jwt','token',{path : '/'});
 
 const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore);
 const store = createStoreWithMiddleware(reducers);
 
-const token = localStorage.getItem("token")
+const token = localStorage.getItem("token");
+// const token = cookies.get('jwt');
 
 if (token !== null) {
+  console.log(token);
   axios.get('http://localhost:5000/token', { headers: { "Authorization": `Bearer ${token}` } })
     .then((res) => {
       if (res.data === true) {
@@ -39,7 +49,10 @@ if (token !== null) {
       console.log(error.response.data)
     });
 }
-
+else{
+  console.log(token + "  po");
+  console.log("bekaar");
+}
 
 function App() {
 

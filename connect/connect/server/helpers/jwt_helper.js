@@ -19,6 +19,7 @@ module.exports = {
             token = req.headers.authorization.split(' ')[1];
         }
     if(!token){
+        localStorage.removeItem('token');
         return next(new AppError('You are not logged in! Please log in',401));
     }
     // console.log(req.headers);
@@ -51,6 +52,7 @@ module.exports = {
             token = req.headers.authorization.split(' ')[1];
         }
     if(!token){
+        localStorage.removeItem('token');
         return next(new AppError('You are not logged in! Please log in',401));
     }
     // console.log(req.headers);

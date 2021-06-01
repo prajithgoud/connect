@@ -121,7 +121,7 @@ class CreateUser extends Component {
                 // alert("You already have an account")
                 document.getElementById("incorrect").style.display = "block";
             }
-            else if (res.data.length === 0)
+            else if (res.data.length === 0) 
             {
                     axios({
                         method: "POST",

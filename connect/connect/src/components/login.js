@@ -5,6 +5,10 @@ import "./Loginstyle.css"
 import Header from "./header";
 import Pageloader from './PageLoader';
 import { hideLoader, showLoader } from '../actions';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
+axios.defaults.withCredentials = true;
+
 class CreateUser extends Component {
     componentDidMount()
     {
@@ -69,10 +73,28 @@ class CreateUser extends Component {
                 .then((res) => {
                     console.log(res.data.token);
                     console.log(res.data.status);
+                    // console.log(res.cookies.jwt);
                     if(res.data.status === 'success'){
                         // Login is successful
                         // redirect to his profile or  main posts page
+                        const token = res.data.token;
+
                         localStorage.setItem('token',res.data.token) 
+                        // console.log(process.env.JWT_COOKIE_EXPIRES_IN);
+                        // const token = res.data.token;
+                        // const cookieOptions = {
+                        //     expires : new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+                        //     // secure:true,
+                        //     path : '/',
+                        //     httpOnly:true //So that the cookie cannot be accessed or modified anyway by the browser
+                        // } 
+                        // cookies.set('jwt',token,cookieOptions);
+                        // req.session.jwt = token;
+                        // axios.get('http://localhost:5000/createcookie',{ withCredentials : true})
+                        // .then(res => {
+                        //     console.log(res.data);
+                        // })
+                        // cookies.set('jwt',token,{path : '/',httpOnly:true});
                         axios.get('http://localhost:5000/token', { headers: {"Authorization" : `Bearer ${res.data.token}`} })
                     .then((res) => {
                         console.log(res.data);
