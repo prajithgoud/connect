@@ -11,13 +11,18 @@ import Header from "./components/header"
 import CreateUser from "./components/create-user.component";
 import Users from "./components/users.component";
 import dataTable from "./components/data-table"
-import Login from "./components/login"
-import Checkout from "./components/checkotp";
+import Login from "./components/login";
+import Resetpwd from "./components/enterresetpwd";
+import Checkotp from "./components/checkotp";
 import Welcome from "./components/welcome";
 import PostList from "./components/posts/posts_list";
 import Postnew from "./components/posts/posts_new";
+import Forgotpwd from "./components/forgotpassword";
 import CommentNew from "./components/posts/posts_detail/comment_new";
 import Comments from "./components/posts/posts_detail/comments";
+import UserProfile from "./components/profile_view";
+import Updateprofile from "./components/profile_update"
+import Settings from "./components/settings";
 import reducers from "./reducers/root_reducer";
 import { AUTH_USER } from "./actions/types";
 import Pageloader from './components/PageLoader';
@@ -69,13 +74,18 @@ function App() {
               <Route exact path="/" component={Welcome} />
               <Route path="/signin" component={CreateUser} />
               <Route path="/login" component={Login} />
-              <Route path="/users" component={Users} />
-              <Route path="/datatable" component={dataTable} />
-              <Route path="/checkout" component={Checkout} />
+              <Route path="/admin" component={Users} />
+              {/* <Route path="/datatable" component={dataTable} /> */}
+              <Route path="/checkotp" component={Checkotp} />
               <Route path="/posts" component={PostList} />
               <Route path="/postnew" component={Postnew} />
               <Route path="/commentnew/:id" component={CommentNew} />
+              <Route path="/settings" component={Settings} />
               <Route path="/comments/:id" component={Comments} />
+              <Route path="/forgotpwd" component={Forgotpwd} />
+              <Route path="/resetpwd" component={Resetpwd} />
+              <Route path="/userprofile" component={UserProfile} />
+              <Route path="/updateprofile" component={Updateprofile} />
               <Pageloader />
               <Signupsuccess />
             </switch>

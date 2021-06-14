@@ -6,6 +6,7 @@ const path = require('path');
 const expbhs = require('express-handlebars');
 let database = require('./database/db');
 let user = require('./models/user-schema');
+let verifyrole = require('./models/verified_schema')
 let posts = require('./models/post-schema')
 const createError = require('http-errors');
 const userRoute = require('./routes/user.routes');
@@ -21,6 +22,7 @@ require("./database/db");
 const nodemailer = require('nodemailer');
 const creds = require('./config');
 const { getMaxListeners } = require('./models/user-schema');
+const { verify } = require('crypto');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -108,10 +110,11 @@ app.get('/hola',(req,res) => {
 //     });
 // }
 
-const SignToken = (id,uname) => {
+const SignToken = (id,uname,Role) => {
     return jwt.sign({
         "uid" : id,
-        "uname" : uname
+        "uname" : uname,
+        "Role": Role
     } , process.env.JWT_SECRET,{
         expiresIn: process.env.JWT_EXPIRES_IN
     });
@@ -189,6 +192,29 @@ app.use('/users', function(req,res) {
     
 })
 
+app.use('/verifyroles',(req,res,next) => {
+    verifyrole.create(req.body,(error,data)=>{
+        if(error){
+            return next(error)
+        }
+        else{
+            res.json(data)
+        }
+    })
+})
+
+app.use('/verifyusers',(req,res,next) => {
+    verifyrole.find((err,data) => {
+        if(err){
+            return next(err)
+        }
+        else{
+            res.json(data)
+        }
+    })
+})
+
+
 app.use('/casual',(req,res) => {
     console.log("hola");
     res.send("true");
@@ -239,6 +265,12 @@ app.use('/create', (req, res, next) => {
 // }))
 // });
 
+
+app.get('/userdetails',verifyAccessToken, catchAsync(async (req,res,next) => {
+    var user = req.user 
+    res.json(user)
+}))
+
 // Added JWT token to login
 
 app.use('/login',limiter, async (req, res,next) => {
@@ -251,7 +283,7 @@ app.use('/login',limiter, async (req, res,next) => {
             // const {email} = req.body;
             const newuser = await user.findOne({Email : req.body.email});
             // console.log(newuser)
-            const token = SignToken(newuser._id,newuser.Name);
+            const token = SignToken(newuser._id,newuser.Name,newuser.Role);
             const cookieOptions = {
                     expires : new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
                     // secure:true,
@@ -311,6 +343,39 @@ app.get('/token/restriction',verifyAccessTokenWithRestriction, catchAsync(async 
     res.send("true");
         // res.json(req.payload);
 }))
+
+app.use('/checkpwd',verifyAccessToken, catchAsync(async (req,res,next) => {
+    const user = req.user 
+    const moduser = {
+        id : user._id,
+        check : ''
+    }
+    bcrypt.compare(req.body.oldpwd,user.Password, catchAsync(async function(err,result) {
+        if(err){
+            return next(err)
+        } else {
+            if(result){
+                moduser.check = true
+                res.json(moduser)
+            }
+            else{
+                moduser.check = false
+                res.json(moduser)
+            }
+        }
+}))
+}))
+
+
+app.use('/bycryptit',(req,res) => {
+    var content = req.body.content 
+    bcrypt.hash(content, saltRounds, catchAsync(async function(err, hash) {
+        content = hash;
+        res.json(content)
+})
+    )
+})
+
 
 app.use('/find',(req,res,next) => {
         user.find(req.body, (error,data) => {

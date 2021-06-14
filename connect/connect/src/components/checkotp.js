@@ -52,15 +52,39 @@ class checkotp extends Component {
         else{
             console.log("Users details not stored in db");
         }
+
+        var uid = ""
+
+            setTimeout(() => {
+                if (st.detail.role === "Professors") {
+                    axios.get('http://localhost:5000/find',
+                        {
+                            "Name": st.detail.Name
+                        })
+                        .then((res) => {
+                            console.log(res)
+                            console.log(res.data[0]._id)
+                            axios.post("http://localhost:5000/verifyroles", {
+                                name: st.detail.Name,
+                                email: st.detail.Email,
+                                userid: res.data[0]._id
+                            }).then((res) => {
+                                    console.log('hello')
+                                })
+                        })
+                }
+            }, 4000);
+        
     }
     render() {
+        const st = this.props.location.state
             return (
             <div>
                 <br></br>
                 <br></br>
                 <br></br>
                 <br></br>
-            <form onSubmit={this.onSubmit()}>
+            <form onSubmit={this.onSubmit(st)}>
                 <div>
 
                 <label for="Otp">Enter Otp:</label>

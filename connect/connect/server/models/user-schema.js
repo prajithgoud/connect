@@ -16,7 +16,7 @@ let userSchema = new Schema({
     Photo: String,
     Role: {
         type: String,
-        enum : ['Admin','Student','StarUser']
+        enum : ['Admin','Student','Professor','CR']
         // default : 'Student'
     },
     Password: {
@@ -25,8 +25,20 @@ let userSchema = new Schema({
         // select : false,
         // required:true
     },
+    dob: {
+        type : Date
+    },
+    gender: {
+        type : String
+    },
+    isverified: {
+        type : String
+    },
     department: {
         type: String
+    },
+    description: {
+        type : String 
     }
 }, {
         collection: 'registration',

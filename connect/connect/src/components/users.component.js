@@ -31,6 +31,10 @@ export default class Users extends Component {
                 <div className="container">
                     <table className="table table-striped table-dark">
                         <thead className="thead-dark">
+                            <br /> 
+                            <br /> 
+                            <br /> 
+                            <br /> 
                             <tr>
                                 <td>IDentification</td>
                                 <td>Email</td>
@@ -38,6 +42,7 @@ export default class Users extends Component {
                             </tr>
                         </thead>
                         <tbody>
+                            
                             {this.dataTable()}
                         </tbody>
                     </table>

@@ -70,7 +70,7 @@ module.exports = {
     req.user = freshUser;
     // 4) Restriction to StarUsers
 
-    if(!req.user.Role.includes('StarUser') && !req.user.Role.includes('Admin') ) {
+    if(!req.user.Role.includes('Professor') && !req.user.Role.includes('Admin') && !req.user.Role.includes('CR') ) {
             return next(new AppError('You do not have permission to perform this action',403));
     }
     // console.log(req.body);

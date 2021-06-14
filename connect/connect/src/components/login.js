@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import "./Loginstyle.css"
+import forgotpwd from "./forgotpassword";
 import Header from "./header";
 import Pageloader from './PageLoader';
 import { hideLoader, showLoader } from '../actions';
@@ -44,6 +45,14 @@ class CreateUser extends Component {
     onChangePassword(e) {
         this.setState({ Password: e.target.value })
     }
+
+    onforgotpwd() {
+        console.log("hello")
+        this.props.history.push({
+            pathname: '/forgotpwd',
+        });
+    }
+
 
     onSubmit(e) {
         e.preventDefault()
@@ -162,7 +171,7 @@ class CreateUser extends Component {
                 </div>
             <button class="signin-button" onClick = {this.update}>Login</button>
             <div class="link">
-                <a href="#">Forgot password?</a> or <a href="#">Sign up</a>
+                <a href="http://localhost:3000/forgotpwd">Forgot password</a>or <a href="http://localhost:3000/signin">Sign up</a>
             </div>
             </form>
             {/* <Pageloader /> */}

@@ -102,6 +102,9 @@ class CreateUser extends Component {
             Role:this.state.Role
         };
 
+        if (this.state.Password !== this.state.Confirm) {
+            document.getElementById("notmatch").style.display = "block";
+        }
         
         axios.post('http://localhost:5000/find', {
             "Email":userObject.Email })
@@ -137,7 +140,7 @@ class CreateUser extends Component {
                                 otp:response.data.otp
                             })
                             this.props.history.push({
-                                pathname : '/Checkout', 
+                                pathname : '/Checkotp', 
                                 state : {detail : userObject,otp : this.state.otp}
                             });
                         }else if(response.data.msg === 'fail'){
@@ -180,14 +183,15 @@ class CreateUser extends Component {
                      {this.state.Emailerror} 
                 </div>
                 </div>
-                <div class = "container">
+                {/* <div class = "container">
                 <span class="icon"><i class='fas fa-graduation-cap'></i></span>
                 <input type="text" value={this.state.department} onChange={this.onChangedepartment} placeholder="Department"/>
-                </div>
-                <div class = "container">
+                </div> */}
+                
+                {/* <div class = "container">
                 <span class="icon"><i class='fas fa-id-card'></i></span>
                 <input type = "text" value = {this.state.Role} onChange={this.onChangerole} placeholder="Role"/>
-                </div>
+                </div> */}
                 <div class="container">
                 <span class="icon"><i class="fas fa-lock"></i></span>
                 <input type="password" value={this.state.Password} onChange={this.onChangePassword} placeholder="password"/>
@@ -198,6 +202,29 @@ class CreateUser extends Component {
                 <div class="container">
                 <span class="icon"><i class="fas fa-lock"></i></span>
                 <input type="password" value={this.state.Confirm} onChange={this.onChangeConfirm} placeholder="Confirm Password"/>
+
+                <div class="container">
+                            {/* <label>
+                                <input type="radio" value="Student" checked={this.state.Role === "Student"} onChange={this.onChangerole} /> Student
+                            </label>
+                            
+                            <label>
+                                <input type="radio" value="ProfessororCR" checked={this.state.Role === "ProfessororCR"} onChange={this.onChangerole} /> Professor or CR
+                            </label> */}
+                            <span class = "icon"><i class='fas fa-users'></i></span>
+                            <input type="text" list="data" onChange={this.onChangerole} placeholder = "Role"/>
+                            <datalist id="data">
+                            {
+                                <option value = "Student" />
+                            }
+                            {
+                                <option value = "Professor" />
+                            }
+                            {
+                                <option value = "CR" />
+                            }
+                            </datalist>
+                </div>
                 <p id="notmatch" style={{display: "none"}}> The Passwords does not Match </p>
                 <p id="incorrect" style={{display: "none"}}> Your account already exists </p>
                 

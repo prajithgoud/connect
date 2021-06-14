@@ -139,18 +139,12 @@ renderLinks() {
     
   </button>
   <ul class="dropdown-menu">
-    {/* <li><a class="dropdown-item" href="#">Action</a></li>
-    <li><a class="dropdown-item" href="#">Another action</a></li>
-    <li><a class="dropdown-item" href="#">Something else here</a></li>
-    <li><hr class="dropdown-divider" /></li>
-    <li><a class="dropdown-item" href="#">Separated link</a></li> */}
-    <li><a class="dropdown-item" href="#">Your profile</a></li>
-    <li><a class="dropdown-item" href="#">Settings</a></li>
+    <li><a class="dropdown-item" href="/userprofile">Your profile</a></li>
+    <li><a class="dropdown-item" href="/settings">Settings</a></li>
+    <li><a class="dropdown-item" href="/updateprofile">Update Profile</a></li>
     <li><hr class="dropdown-divider" /></li>
     <li><a class = "dropdown-item" ><button onClick = {this.signoutuser}> Sign out</button></a></li>
   </ul>
-  {/* <Reload /> */}
-
 </div>
     );
   } else {

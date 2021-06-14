@@ -5,6 +5,9 @@ import { connect } from 'react-redux';
 import { fetchPosts } from "../../actions/index"
 import Header from "../header";
 import Reload from "../Reload";
+import Comments from "./posts_detail/comments"
+import Commentnew from "./posts_detail/comment_new"
+import Helmet from 'react-helmet';
 
 
 class PostList extends Component {
@@ -22,6 +25,7 @@ class PostList extends Component {
   renderPostSummary(post) {
     return (
       <div key={post._id}>
+        <span>Title: {post.title}</span><br />
         <span className="span-with-margin text-grey"> • </span><br></br>
         <span className="span-with-margin text-grey">Author : {post.authorName}</span><br></br>
         <span className="span-with-margin text-grey"> • </span>
@@ -35,7 +39,7 @@ class PostList extends Component {
         <br />
         <Link className="link-without-underline" to={`/commentnew/${post._id}`}> Comment </Link>
         <br />
-        <Link className="link-without-underline" to={`/comments/${post._id}`}> View Comment </Link>
+        <Link className="link-without-underline" to={`/comments/${post._id}`}> View Comments </Link>
         {/* {this.renderTags(post.categories)} */}
         <hr />
       </div>

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { Component } from 'react';
 
 class DataTable extends Component {
@@ -8,10 +9,19 @@ class DataTable extends Component {
                     {this.props.obj._id}
                 </td>
                 <td>
-                    {this.props.obj.Email}
+                    {this.props.obj.email}
                 </td>
                 <td>
-                    {this.props.obj.Password}
+                    <button onclick={
+                        axios.post(`http://localhost:5000/update/${this.props.obj.userid}`,{
+                            "isverified" : true
+                        })
+                        .then((res)=>{
+                            axios.post(`http://localhost:5000/delete/${this.props.obj._id}`)
+                            .then((res)=>{
+                            })
+                        })
+                    }>Accept</button>
                 </td>
             </tr>
         );
