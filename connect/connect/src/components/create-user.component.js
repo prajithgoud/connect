@@ -99,7 +99,8 @@ class CreateUser extends Component {
             Password:this.state.Password,
             Name: this.state.Name,
             department: this.state.department,
-            Role:this.state.Role
+            Role:this.state.Role,
+            isverified:false
         };
 
         if (this.state.Password !== this.state.Confirm) {

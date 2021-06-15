@@ -92,52 +92,82 @@ const {verifyAccessToken,verifyAccessTokenWithRestriction} = require('../helpers
 //     })
 // })
 
-router.route('/createpost').post((req, res,next) => {
+// router.route('/createpost').post((req, res,next) => {
 
+//     const token = req.body.token;
+//     const info = jwt.decode(token, process.env.JWT_SECRET)
+//     const reqtitle = req.body.title;
+//     const reqcategories = req.body.categories;
+//     const reqcontent = req.body.content;
+//     // const authorId = user._id;
+//     const name = info.uname;
+//     const reqtime = Date.now();
+
+
+//     console.log(reqtitle,reqcategories)
+
+//     posts.create({
+//         title: reqtitle,
+//         categories: reqcategories,
+//         content: reqcontent,
+//         authorName : name,
+//         time: reqtime
+//     }, (err,data) => {
+//         if(err){
+//             return next(err)
+//         }
+//         else{
+//             res.json(data)
+//         }
+//     })
+
+
+
+//     });
+
+router.route('/createpost').post((req, res, next) => {
+
+    const token = req.headers.authorization.split(' ')[1];
+    const info = jwt.decode(token, process.env.JWT_SECRET)
     const reqtitle = req.body.title;
     const reqcategories = req.body.categories;
     const reqcontent = req.body.content;
-    // const authorId = user._id;
-    // const authorName = user.firstName + " " + user.lastName;
+    const Id = info.uid;
+    const name = info.uname;
     const reqtime = Date.now();
-
-
-    console.log(reqtitle,reqcategories)
 
     posts.create({
         title: reqtitle,
         categories: reqcategories,
         content: reqcontent,
-        time: reqtime
-    }, (err,data) => {
-        if(err){
+        time: reqtime,
+        authorName: name,
+        // authorId: Id
+    }, (err, data) => {
+        if (err) {
             return next(err)
         }
-        else{
+        else {
             res.json(data)
         }
     })
-
-
-
-    });
+});
 
 router.route('/createcomment').post((req, res, next) => {
 
-    // const token = req.headers.authorization.split(' ')[1];
-    const token = req.body.token;
+    const token = req.headers.authorization.split(' ')[1];
     const info = jwt.decode(token, process.env.JWT_SECRET)
     console.log(token);
     const content = req.body.content;
     const postId = req.body.postId
     // const authorId = info.uid 
-    const authorName = info.uname
+    const name = info.uname
     console.log(content,postId)
 
     comment.create({
         postId: postId,
         content: content,
-        authorName: authorName,
+        authorName: name,
         time: Date.now()
     }, (err, data) => {
         if (err) {

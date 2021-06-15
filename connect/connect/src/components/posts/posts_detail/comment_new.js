@@ -47,7 +47,8 @@ class CreateUser extends Component {
             console.log(res.data);
             if(res.data === true){
                 console.log("inside if");
-                axios.post('http://localhost:5000/api/createcomment',formdet)
+                axios.post('http://localhost:5000/api/createcomment',formdet,{
+                    headers: { "Authorization": `Bearer ${token}` }})
                 .then((res) => {
                     console.log(res.data);
                 })

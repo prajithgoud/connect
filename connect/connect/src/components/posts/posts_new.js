@@ -53,7 +53,8 @@ class CreateUser extends Component {
         axios.get('http://localhost:5000/token/restriction', { headers: {"Authorization" : `Bearer ${token}`} })
         .then((res) => {
             console.log(res.data);
-            axios.post('http://localhost:5000/api/createpost',formdet)
+            axios.post('http://localhost:5000/api/createpost',formdet,{
+                headers: { "Authorization": `Bearer ${token}` }})
             .then((res)=>{
                 // console.log(res.data);
             })
