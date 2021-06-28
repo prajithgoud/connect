@@ -40,8 +40,8 @@ const sendErrorProd = (err,res) => {
     if(err.isOperational) {
     res.status(err.statusCode).json({
         status:err.status,
-        statusCode:err.statusCode,
         message:err.message,
+        statusCode:err.statusCode,
         error:err,
         stack:err.stack
     });

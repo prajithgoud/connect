@@ -1,5 +1,8 @@
 import axios from 'axios';
 import React, { Component } from 'react';
+import "./profileUpdateStyle.css";
+import { connect } from 'react-redux';
+
 
 class profile_view extends Component {
 
@@ -14,11 +17,17 @@ class profile_view extends Component {
             gender : '',
             email : '',
             department : '',
-            description : ''
+            description : '',
+            Photo: ''
         }
     }
 
     componentDidMount() {
+        // if(this.props.authenticated){
+            if(!this.props.authenticated)
+            {
+                this.props.history.replace('/posts');
+            }
         axios.get('http://localhost:5000/userdetails', { headers: { "Authorization": `Bearer ${localStorage.getItem('token')}` } })
         .then((res)=>{
             console.log(res.data.Name)
@@ -28,7 +37,8 @@ class profile_view extends Component {
                 gender : res.data.gender,
                 email : res.data.Email, 
                 department : res.data.department,
-                description : res.data.description
+                description : res.data.description,
+                Photo: res.data.Photo
             })
         })
     }
@@ -53,12 +63,28 @@ class profile_view extends Component {
                 <p>Email: {this.state.email}</p>
                 <p>Department: {this.state.department}</p>
                 <p>Description: {this.state.description}</p>
-
+                {/* <p>Photo : {this.state.Photo} </p> */}
+                <img src = {this.state.Photo} class = "image-preview__image" alt="Profile_pic" />
 
                 <button onClick={this.onSubmit}>Update profile</button>
             </div>
         );
-    }
+    // }
+    // else {
+        // this.props.history.push({
+        //     pathname : '/login'
+        // })
+    // }
+}
 }
 
-export default profile_view;
+function mapStateToProps(state) {
+    // window.location.reload(false);
+    console.log(state)
+
+  return {
+    authenticated: state.auth.authenticated, 
+    posts: state.posts 
+  };
+}
+export default connect(mapStateToProps)(profile_view);

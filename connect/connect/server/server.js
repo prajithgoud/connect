@@ -29,9 +29,14 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
-
+const multer = require('multer');
+const sharp = require('sharp');
+const morgan = require('morgan');
 
 const app = express();
+
+
+
 
 
 // Global Middleware
@@ -57,6 +62,7 @@ process.on('uncaughtException',err => {
     });
 });
 // BodyParser middleware 
+// app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
@@ -265,6 +271,21 @@ app.use('/create', (req, res, next) => {
 // }))
 // });
 
+app.post('/search',(req,res) => {
+    var text = req.body.text
+    user.find({
+        "Name" : {
+            $regex : new RegExp("^" + text)
+        }
+    },(err,data) => {
+        if(err) {
+            return next(err)
+        }
+        else {
+            res.json(data)
+        }
+    })
+})
 
 app.get('/userdetails',verifyAccessToken, catchAsync(async (req,res,next) => {
     var user = req.user 
@@ -421,12 +442,84 @@ app.use('/delete/:id' , catchAsync(async (req,res,next) => {
     }
 }));
 
+// const upload = multer({dest : 'public/img/users'});
+const upload = multer({
+    // storage:multer.diskStorage({
+    //         destination:(req,file,cb) => {
+    //             cb(null,'public/img/users');
+    //         },
+    //         filename:(req,file,cb) => {
+    //             const ext = file.mimetype.split('/')[1];
+    //             cb(null,`user - ${req.params.id} - ${Date.now()}.${ext}`);
+    //         }
+    //     }),
+    storage:multer.memoryStorage(),
+    fileFilter:(req,file,cb) => {
+            if(file.mimetype.startsWith('image')) {
+                cb(null,true);
+            }
+            else{
+                cb(new AppError('Not an image! Please Upload only image.',400),false);
+            }
+        }
+});
+
+
+const resizePhoto = (req,res,next) => {
+    if(!req.file)
+        return next();
+    req.file.filename = `user - ${req.params.id} - ${Date.now()}.jpeg`;
+
+    sharp(req.file.buffer)
+    .resize(500,500)
+    .toFormat('jpeg')
+    .jpeg({ quality:90})
+    .toFile(`public/img/users/${req.file.filename}`);
+
+    next();
+};
+
+app.use('/updatephoto/:id' , upload.single('Photo'),resizePhoto,(req, res, next) => {
+    console.log(req.file);
+    console.log(req.body);
+    
+    user.findByIdAndUpdate(req.params.id, {
+        $set: {
+        Photo :req.file.filename,
+    }
+    }, (error, data) => {
+        if (error) {
+            return next(error);
+        } else {
+            res.json(data)
+            console.log('User updated successfully !')
+        }
+    })
+
+    // user.findByIdAndUpdate(req.params.id, {
+    //     $set: {
+    //         dob : req.body.dob,
+    //         gender : req.body.gender,
+    //         description : req.body.description,
+    //         department : req.body.department,
+    //         Photo : req.file.filename
+    //    }
+    // }, (error, data) => {
+    //     if (error) {
+    //         return next(error);
+            
+    //     } else {
+    //         res.json(data)
+    //         console.log('User updated successfully !')
+    //     }
+    // })
+})
 app.use('/update/:id' ,(req, res, next) => {
     user.findByIdAndUpdate(req.params.id, {
         $set: req.body
     }, (error, data) => {
         if (error) {
-            return next(error)
+            return next(error);
             
         } else {
             res.json(data)
@@ -459,7 +552,7 @@ const server = app.listen(port, () => {
 //     next(createError(404));
 // });
 
-
+// Global Error Handler
 app.use(globalErrorHandler)
 
 process.on('uncaughtRejection',err => {

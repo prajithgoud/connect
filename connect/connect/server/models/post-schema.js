@@ -22,6 +22,9 @@ let postSchema = new Schema({
   time: {
       type: Date
   }
+},{
+
+  collection: 'posts',
 });
 
 module.exports = mongoose.model('posts',postSchema)

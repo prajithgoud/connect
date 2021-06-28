@@ -10,7 +10,7 @@ import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 axios.defaults.withCredentials = true;
 
-class CreateUser extends Component {
+class Login extends Component {
     componentDidMount()
     {
         if(this.props.authenticated)
@@ -160,7 +160,7 @@ class CreateUser extends Component {
                 <div class="fields">
                     <div class="username">
                         <input type="username" value={this.state.Email} onChange={this.onChangeEmail} class="user-input" placeholder="email" />
-                        
+                        _
                     </div>
                     <div class="password" >
                          <input type="password" value={this.state.Password} onChange={this.onChangePassword}class="pass-input" placeholder="password" />
@@ -188,4 +188,4 @@ function mapStatetoProps(state) {
     }
 }
 
-export default connect(mapStatetoProps)(CreateUser);
+export default connect(mapStatetoProps)(Login);

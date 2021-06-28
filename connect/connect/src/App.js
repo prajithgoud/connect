@@ -1,11 +1,12 @@
 import './App.css';
 
-import React , {useEffect} from 'react';
+import React , {useEffect, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route, } from "react-router-dom";
 import { Provider } from "react-redux"
 import { createStore, applyMiddleware } from "redux";
 import reduxThunk from "redux-thunk";
 import axios from 'axios';
+import Modal from './Modal'
 
 import Header from "./components/header"
 import CreateUser from "./components/create-user.component";
@@ -27,13 +28,45 @@ import reducers from "./reducers/root_reducer";
 import { AUTH_USER } from "./actions/types";
 import Pageloader from './components/PageLoader';
 import Signupsuccess from './components/Signupsuccess';
+import addPhoto from './components/addPhoto'
 // import { Token } from '../server/server';
 
 // import Cookies from 'js-cookie';
 // import  { Cookies } from 'react-cookie';
+
+
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
+const BUTTON_WRAPPER_STYLES = {
+  position: 'relative',
+  zIndex: 1
+}
+
+const OTHER_CONTENT_STYLES = {
+  position: 'relative',
+  zIndex: 2,
+  backgroundColor: 'red',
+  padding: '10px'
+}
+
+const Errhandling = (error) => {
+  console.log(error.response.data)
+  const [isOpen, setIsOpen] = useState(false)
+return (
+<>
+  <div style={BUTTON_WRAPPER_STYLES} onClick={() => console.log('clicked')}>
+    <button onClick={() => setIsOpen(true)}>Open Modal</button>
+
+    <Modal open={isOpen} onClose={() => setIsOpen(false)}>
+      Fancy Modal
+    </Modal>
+  </div>
+
+  <div style={OTHER_CONTENT_STYLES}>Other Content</div>
+</>
+)
+}; 
 // cookies.set('jwt','token',{path : '/'});
 
 const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore);
@@ -50,9 +83,10 @@ if (token !== null) {
         store.dispatch({ type: AUTH_USER })
       }
     })
-    .catch((error) => {
-      console.log(error.response.data)
-    });
+    .catch(error =>{
+      console.log(error.response.data);
+    }
+    )
 }
 else{
   console.log(token + "  po");
@@ -86,6 +120,7 @@ function App() {
               <Route path="/resetpwd" component={Resetpwd} />
               <Route path="/userprofile" component={UserProfile} />
               <Route path="/updateprofile" component={Updateprofile} />
+              <Route path="/addPhoto" component={addPhoto} />
               <Pageloader />
               <Signupsuccess />
             </switch>

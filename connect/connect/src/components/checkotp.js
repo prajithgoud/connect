@@ -8,7 +8,7 @@ class checkotp extends Component {
         this.props.dispatch((showaccountCreated()))
         setTimeout(() => {
             this.props.dispatch(hideaccountCreated())
-        },6000);
+        },5000);
     }
 
     constructor(props) {
@@ -55,20 +55,40 @@ class checkotp extends Component {
 
         var uid = ""
 
+            // setTimeout(() => {
+            //     if (st.detail.role === "Professors") {
+            //         axios.get('http://localhost:5000/find',
+            //             {
+            //                 "Name": st.detail.Name
+            //             })
+            //             .then((res) => {
+            //                 console.log(res)
+            //                 console.log(res.data[0]._id)
+            //                 axios.post("http://localhost:5000/verifyroles", {
+            //                     name: st.detail.Name,
+            //                     email: st.detail.Email,
+            //                     userid: res.data[0]._id
+            //                 }).then((res) => {
+            //                         console.log('hello')
+            //                     })
+            //             })
+            //     }
+            // }, 4000);
+
             setTimeout(() => {
-                if (st.detail.role === "Professors") {
-                    axios.get('http://localhost:5000/find',
+                if (st.detail.role !== "Student") {
+                    axios.post('http://localhost:5000/find',
                         {
-                            "Name": st.detail.Name
+                            "Email": st.detail.Email
                         })
                         .then((res) => {
-                            console.log(res)
-                            console.log(res.data[0]._id)
+                            var resp = res
                             axios.post("http://localhost:5000/verifyroles", {
-                                name: st.detail.Name,
-                                email: st.detail.Email,
-                                userid: res.data[0]._id
-                            }).then((res) => {
+                                name: resp.data[0].Name,
+                                email: resp.data[0].Email,
+                                userid: resp.data[0]._id
+                            }).
+                                then((res) => {
                                     console.log('hello')
                                 })
                         })

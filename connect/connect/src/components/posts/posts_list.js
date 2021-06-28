@@ -8,9 +8,20 @@ import Reload from "../Reload";
 import Comments from "./posts_detail/comments"
 import Commentnew from "./posts_detail/comment_new"
 import Helmet from 'react-helmet';
-
+import jwt from "jsonwebtoken";
+import axios from 'axios';
 
 class PostList extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      verified: '',
+      signedin: ''
+    }
+    this.decide = this.decide.bind(this);
+  }
+
 
   componentDidMount() {
     this.props.fetchPosts();
@@ -37,35 +48,68 @@ class PostList extends Component {
           <div className="text-justify" dangerouslySetInnerHTML={{ __html: post.content }} />
         </h3>
         <br />
-        <Link className="link-without-underline" to={`/commentnew/${post._id}`}> Comment </Link>
+        {/* <Link className="link-without-underline" to={`/commentnew/${post._id}`}> Comment </Link>
         <br />
-        <Link className="link-without-underline" to={`/comments/${post._id}`}> View Comments </Link>
+        <Link className="link-without-underline" to={`/comments/${post._id}`}> View Comments </Link> */}
+        {this.state.signedin === true && <Link className="link-without-underline" to={`/commentnew/${post._id}`}> Comment </Link>}
+        <br />
+        {<Link className="link-without-underline" to={`/comments/${post._id}`}> View Comments </Link>}
         {/* {this.renderTags(post.categories)} */}
         <hr />
       </div>
     );
   }
+  decide() {
+    axios.get('http://localhost:5000/token', { headers: { "Authorization": `Bearer ${localStorage.getItem('token')}` } })
+      .then((res) => {
+        if (res.data === true) {
+          this.setState({
+            signedin : true
+          })
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+      });
 
+    if(this.state.signedin === true) {
+      axios.get('http://localhost:5000/userdetails', { headers: { "Authorization": `Bearer ${localStorage.getItem('token')}` } })
+            .then((res) => {
+              if (res.data.isverified === "true") {
+                this.setState({
+                  verified : true
+                })
+              }
+            })
+        }
+    }
+
+    
   render() {
     // this.reload();
+      return (
+        <div>
+          <Header />
+          <Reload />
+        <br></br>
+        <br></br>
+        <br></br>
+        <div className="post">
+        {this.decide()}
+          { this.state.verified === true && <Link className="btn btn-primary mb-5" to={'/postnew'}>Publish A New Post</Link> }
+          {_.map(this.props.posts, post => {
+            return this.renderPostSummary(post);
+          })}
+          {/* <Link className="btn btn-primary mb-5" to={'/postnew'}>Publish A New Post</Link>
+          {_.map(this.props.posts, post => {
+            return this.renderPostSummary(post);
+          })} */}
+        {/* {this.reload()} */}
+        {/* <button onClick = {this.reload}>Click me</button> */}
+        </div>
+        </div>
+      );
     
-    return (
-      <div>
-        <Header />
-        <Reload />
-      <br></br>
-      <br></br>
-      <br></br>
-      <div className="post">
-        <Link className="btn btn-primary mb-5" to={'/postnew'}>Publish A New Post</Link>
-        {_.map(this.props.posts, post => {
-          return this.renderPostSummary(post);
-        })}
-      {/* {this.reload()} */}
-      {/* <button onClick = {this.reload}>Click me</button> */}
-      </div>
-      </div>
-    );
   }
 }
 

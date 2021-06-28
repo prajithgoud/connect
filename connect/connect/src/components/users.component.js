@@ -10,7 +10,7 @@ export default class Users extends Component {
     }
 
     componentDidMount() {
-        axios.get('http://localhost:5000/users')
+        axios.get('http://localhost:5000/verifyusers')
             .then(res => {
                 this.setState({ usersCollection: res.data });
             })
@@ -38,7 +38,7 @@ export default class Users extends Component {
                             <tr>
                                 <td>IDentification</td>
                                 <td>Email</td>
-                                <td>Password</td>
+                                {/* <td>Password</td> */}
                             </tr>
                         </thead>
                         <tbody>

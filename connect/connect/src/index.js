@@ -3,12 +3,15 @@ import ReactDOM from 'react-dom';
 // import { BrowserRouter } from "react-router-dom";
 import './index.css';
 import App from './App';
+import Error from './App';
+
 // import * as serviceWorker from "./serviceWorker";
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
     <App />
+    {/* <Error /> */}
   </React.StrictMode>,
   document.getElementById('root')
 );

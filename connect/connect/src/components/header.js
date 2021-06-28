@@ -92,13 +92,19 @@ import "./destination/style.css";
 import { Link } from "react-router-dom";
 import Reload from "./Reload";
 import { withRouter } from 'react-router';
-
+import Searchtable from "./search_table";
 
 let uname = ''
 class Header extends Component {
 
   constructor(props) {
     super(props)
+    this.state = {
+      searchval: '',
+      data: []
+    }
+
+    this.onchangesearchval = this.onchangesearchval.bind(this);
     this.signoutuser = this.signoutuser.bind(this);
   }
   
@@ -127,9 +133,36 @@ class Header extends Component {
       // uname = info.uname;
     }
   }
+  dataTable() {
+    return this.state.data.map((data, i) => {
+      return <Searchtable obj={data} key={i} />;
+    });
+  }
 
+  onchangesearchval(e) {
 
+    this.state.data = []
 
+    this.setState({
+      searchval: e.target.value
+    })
+
+    setTimeout(() => {
+      if (this.state.searchval !== '') {
+        axios.post('http://localhost:5000/search', {
+          text: this.state.searchval
+        })
+          .then((res) => {
+            console.log(res);
+            Object.keys(res.data).map(key =>
+              this.state.data.push({
+                name: res.data[key].Name,
+                id: res.data[key]._id
+              }))
+          })
+      }
+    }, 20)
+}
 renderLinks() {
   if (this.props.authenticated) {
     console.log('true')
@@ -140,7 +173,8 @@ renderLinks() {
   </button>
   <ul class="dropdown-menu">
     <li><a class="dropdown-item" href="/userprofile">Your profile</a></li>
-    <li><a class="dropdown-item" href="/settings">Settings</a></li>
+    <li><a class="dropdown-item" href="/settings">Reset Password</a></li>
+    <li><a class="dropdown-item" href="/addPhoto">Upload userphoto</a></li>
     <li><a class="dropdown-item" href="/updateprofile">Update Profile</a></li>
     <li><hr class="dropdown-divider" /></li>
     <li><a class = "dropdown-item" ><button onClick = {this.signoutuser}> Sign out</button></a></li>
@@ -183,17 +217,19 @@ render() {
             </li>
           </ul>
           <form className="form-inline my-2 my-md-0">
-            <input
+            {/* <input
               className="form-control mr-sm-2"
+              onChange={this.onchangesearchval}
               type="text"
               placeholder="Search Post"
             />
             <button
               className="btn btn-outline-success my-2 my-sm-0"
+              onSubmit={this.onsubmitsearchval}
               type="submit"
-            >
-              Search
-            </button>
+            > */}
+            <input type="text" onChange={this.onchangesearchval} value={this.state.searchval} placeholder="Search Post" />
+            <button className="btn btn-outline-success my-2 my-sm-0" type="submit" onSubmit={this.onsubmitsearchval}> Search </button>
           </form>
           <div className="ml-auto">{this.renderLinks()}</div>
         </div>

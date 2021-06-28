@@ -200,7 +200,7 @@ router.route('/comments/:id').get((req, res) => {
         } else {
             res.json(data)
         }
-    })
+    }).sort({time:-1})
 })
 
 

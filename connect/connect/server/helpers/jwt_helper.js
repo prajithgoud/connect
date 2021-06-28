@@ -77,6 +77,6 @@ module.exports = {
     req.payload = decoded;
     // res.send(decoded);
     next();
-    })  
+    }) 
     
 }
